@@ -21,15 +21,15 @@ export default function Navbar() {
         scrolled ? "shadow-[0_10px_26px_rgba(0,0,0,.45)]" : ""
       }`}
     >
-      <div className="mx-auto flex w-full max-w-[880px] flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="font-bold text-text-bright">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center justify-between gap-2 px-4 py-3.5 sm:px-6 lg:px-8">
+        <div className="text-lg font-bold text-text-bright">
           imhannsop
         </div>
         <div className="flex flex-wrap gap-0.5 text-text-dim">
           {crumbLinks.map((id) => (
             <button
               key={id}
-              className={`cursor-pointer rounded-sm px-2 py-1 text-[12.5px] hover:bg-bg-raised hover:text-purple ${
+              className={`cursor-pointer rounded-sm px-2.5 py-1.5 text-sm hover:bg-bg-raised hover:text-purple ${
                 active === id ? "text-green" : ""
               }`}
               onClick={() => scrollToSection(id)}

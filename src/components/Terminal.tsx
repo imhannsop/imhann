@@ -61,10 +61,10 @@ export default function Terminal() {
   };
 
   return (
-    <div className="relative rounded-[3px] border border-border bg-bg-panel px-[18px] pt-3.5 pb-4">
-      <div className="absolute -top-[9px] left-3.5 bg-bg px-2 text-[11px] tracking-[.12em] text-text-dim uppercase">shell</div>
+    <div className="relative rounded-[3px] border border-border bg-bg-panel px-5 pt-4 pb-5">
+      <div className="absolute -top-[9px] left-3.5 bg-bg px-2 text-xs tracking-[.12em] text-text-dim uppercase">shell</div>
       <div
-        className="mb-2 flex max-h-40 flex-col gap-1.5 overflow-y-auto text-[12.5px]"
+        className="mb-2.5 flex max-h-48 flex-col gap-2 overflow-y-auto text-sm"
         ref={logRef}
       >
         {lines.map((l, i) => (
@@ -76,8 +76,8 @@ export default function Terminal() {
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-[13px] whitespace-nowrap text-green">guest@ekoubuyoi:~$</span>
+      <div className="flex items-center gap-2">
+        <span className="text-sm whitespace-nowrap text-green">guest@ekoubuyoi:~$</span>
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -90,10 +90,10 @@ export default function Terminal() {
           autoComplete="off"
           spellCheck={false}
           placeholder="try: help"
-          className="flex-1 bg-transparent text-[13px] text-text-bright caret-purple focus:outline-none"
+          className="flex-1 bg-transparent text-sm text-text-bright caret-purple focus:outline-none"
         />
       </div>
-      <div className="mt-2 text-[11px] text-text-dim">
+      <div className="mt-2.5 text-xs text-text-dim">
         try <b className="font-medium text-text">help</b>, <b className="font-medium text-text">ls</b>,{" "}
         <b className="font-medium text-text">cat 01-clinic-portal.md</b>,{" "}
         <b className="font-medium text-text">cd blogs</b>, <b className="font-medium text-text">open github</b>,{" "}

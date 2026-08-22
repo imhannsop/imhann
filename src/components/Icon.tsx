@@ -31,7 +31,7 @@ export default function Icon({ name }: { name: keyof typeof paths }) {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="h-4 w-4 flex-none fill-none stroke-current stroke-[2.3]"
+      className="h-5 w-5 flex-none fill-none stroke-current stroke-[2.3]"
     >
       {paths[name]}
     </svg>
