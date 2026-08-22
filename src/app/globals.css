@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #08080d;
-  --color-bg-panel: #0d0d14;
-  --color-bg-raised: #12131c;
-  --color-border: #262a3d;
-  --color-border-dim: #171926;
-  --color-text: #c7cbe8;
-  --color-text-dim: #5a5e7a;
-  --color-text-bright: #eef0ff;
-  --color-purple: #b39dfb;
-  --color-green: #8fd68a;
-  --color-blue: #7ea6fb;
-  --color-amber: #e3b567;
-  --color-red: #e0716f;
-  --color-paper: #f3ead4;
-  --color-paper-ink: #3a3120;
-  --color-emerald: #34d399;
-  --color-cyan: #22d3ee;
+  --color-bg: #000000;
+  --color-bg-panel: #0a0a0a;
+  --color-bg-raised: #141414;
+  --color-border: #262626;
+  --color-border-dim: #171717;
+  --color-text: #a3a3a3;
+  --color-text-dim: #525252;
+  --color-text-bright: #ffffff;
+  --color-accent: #ffffff;
+  --color-green: #ffffff;
+  --color-blue: #ffffff;
+  --color-amber: #e5e5e5;
+  --color-red: #ef4444; /* Retained subtle red for destructive/error states */
+  --color-paper: #ffffff;
+  --color-paper-ink: #000000;
+  --color-emerald: #ffffff;
+  --color-cyan: #06b6d4;
 
   --font-mono: var(--font-jbmono), monospace;
   --font-serif: var(--font-fraunces), serif;
@@ -38,12 +38,12 @@
 }
 
 *:focus-visible {
-  outline: 2px solid var(--color-purple);
+  outline: 2px solid var(--color-cyan);
   outline-offset: 2px;
 }
 
 /* toggled via JS classList in MobileNav */
 .dragging {
   cursor: grabbing;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15);
 }
