@@ -21,8 +21,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${jetbrainsMono.variable} ${fraunces.variable}`}>{children}</body>
+    <html lang="en" className="scroll-smooth bg-bg">
+      <body
+        className={`${jetbrainsMono.variable} ${fraunces.variable} flex flex-col items-center bg-bg font-mono text-sm text-text`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

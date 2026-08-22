@@ -28,7 +28,11 @@ const paths: Record<string, React.ReactNode> = {
 
 export default function Icon({ name }: { name: keyof typeof paths }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="h-4 w-4 flex-none fill-none stroke-current stroke-[2.3]"
+    >
       {paths[name]}
     </svg>
   );

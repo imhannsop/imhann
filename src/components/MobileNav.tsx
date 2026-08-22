@@ -121,12 +121,20 @@ export default function MobileNav() {
   };
 
   return (
-    <div ref={wrapRef} className={`at-wrap${open ? " open" : ""}${snappedLeft ? " snapped-left" : ""}`}>
-      <div className="at-menu">
+    <div ref={wrapRef} className="fixed z-[60] hidden touch-none max-sm:block">
+      <div
+        className={`absolute right-0 bottom-[62px] flex min-w-[132px] flex-col gap-0.5 rounded-xl border border-border bg-bg-panel p-1.5 shadow-[0_12px_30px_rgba(0,0,0,.5)] transition-all duration-200 ease-out ${
+          open
+            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none translate-y-2 scale-[.92] opacity-0"
+        } ${snappedLeft ? "left-0 right-auto origin-bottom-left" : "origin-bottom-right"}`}
+      >
         {mobileNavItems.map((item) => (
           <button
             key={item.id}
-            className={`at-menu-item${active === item.id ? " active" : ""}`}
+            className={`flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-[12.5px] whitespace-nowrap text-text-dim transition-colors duration-150 hover:bg-bg-raised ${
+              active === item.id ? "text-green" : ""
+            }`}
             aria-label={item.label}
             onClick={() => {
               scrollToSection(item.id);
@@ -140,16 +148,18 @@ export default function MobileNav() {
       </div>
       <button
         ref={bubbleRef}
-        className={`at-bubble${visible ? " visible" : ""}`}
+        className={`relative flex h-[52px] w-[52px] cursor-grab items-center justify-center rounded-full border border-border bg-bg-panel shadow-[0_8px_22px_rgba(0,0,0,.45)] backdrop-blur transition-all duration-500 [transition-timing-function:cubic-bezier(.34,1.56,.64,1)] ${
+          visible ? "scale-100 opacity-100" : "scale-50 opacity-0"
+        }`}
         aria-label="Menu"
         onMouseDown={onPointerDown}
         onTouchStart={onPointerDown}
       >
-        <span className="at-bubble-dots">
-          <span />
-          <span />
-          <span />
-          <span />
+        <span className="grid grid-cols-[repeat(2,5px)] grid-rows-[repeat(2,5px)] gap-1">
+          <span className="h-[5px] w-[5px] rounded-[1px] bg-green" />
+          <span className="h-[5px] w-[5px] rounded-[1px] bg-purple" />
+          <span className="h-[5px] w-[5px] rounded-[1px] bg-blue" />
+          <span className="h-[5px] w-[5px] rounded-[1px] bg-amber" />
         </span>
       </button>
     </div>

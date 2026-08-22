@@ -12,7 +12,7 @@ import Terminal from "@/components/Terminal";
 export default function Home() {
   return (
     <>
-      <main className="wrap">
+      <main className="mx-auto flex w-full max-w-[880px] flex-col gap-3.5 px-4 pt-[76px] sm:px-6 lg:px-8 max-sm:pt-6 max-sm:pb-6">
         <Navbar />
         <MobileNav />
         <Hero />
@@ -23,7 +23,7 @@ export default function Home() {
         <Blogs />
         <Contact />
         <Terminal />
-        <footer>prototype — interactive concept, not final content</footer>
+        <footer className="py-5 text-[11px] text-border">prototype — interactive concept, not final content</footer>
       </main>
     </>
   );

@@ -61,17 +61,23 @@ export default function Terminal() {
   };
 
   return (
-    <div className="panel term">
-      <div className="panel-title">shell</div>
-      <div className="term-log" ref={logRef}>
+    <div className="relative rounded-[3px] border border-border bg-bg-panel px-[18px] pt-3.5 pb-4">
+      <div className="absolute -top-[9px] left-3.5 bg-bg px-2 text-[11px] tracking-[.12em] text-text-dim uppercase">shell</div>
+      <div
+        className="mb-2 flex max-h-40 flex-col gap-1.5 overflow-y-auto text-[12.5px]"
+        ref={logRef}
+      >
         {lines.map((l, i) => (
-          <div className={l.isCmd ? "cmd" : "out"} key={i}>
+          <div
+            className={l.isCmd ? "text-text-bright before:content-['guest@ekoubuyoi:~$_'] before:text-green" : "text-text-dim whitespace-pre-wrap"}
+            key={i}
+          >
             {l.text}
           </div>
         ))}
       </div>
-      <div className="term-input-row">
-        <span className="prompt">guest@ekoubuyoi:~$</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-[13px] whitespace-nowrap text-green">guest@ekoubuyoi:~$</span>
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -84,11 +90,14 @@ export default function Terminal() {
           autoComplete="off"
           spellCheck={false}
           placeholder="try: help"
+          className="flex-1 bg-transparent text-[13px] text-text-bright caret-purple focus:outline-none"
         />
       </div>
-      <div className="hint">
-        try <b>help</b>, <b>ls</b>, <b>cat 01-clinic-portal.md</b>, <b>cd blogs</b>, <b>open github</b>,{" "}
-        <b>clear</b>
+      <div className="mt-2 text-[11px] text-text-dim">
+        try <b className="font-medium text-text">help</b>, <b className="font-medium text-text">ls</b>,{" "}
+        <b className="font-medium text-text">cat 01-clinic-portal.md</b>,{" "}
+        <b className="font-medium text-text">cd blogs</b>, <b className="font-medium text-text">open github</b>,{" "}
+        <b className="font-medium text-text">clear</b>
       </div>
     </div>
   );
