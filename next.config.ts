@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const repoName = "/imhannsop";
+const repoName = "/imhannsop.github.io";
 
 const nextConfig: NextConfig = {
   output: "export",
