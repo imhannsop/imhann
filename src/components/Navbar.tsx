@@ -23,7 +23,7 @@ export default function Navbar() {
     >
       <div className="mx-auto flex w-full max-w-[880px] flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6 lg:px-8">
         <div className="font-bold text-text-bright">
-          ekoubuyoi<span className="text-green">.</span>dev
+          imhannsop
         </div>
         <div className="flex flex-wrap gap-0.5 text-text-dim">
           {crumbLinks.map((id) => (

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { stats } from "@/lib/data";
 
+import Image from "next/image";
+
 const BLURB = "I write code, build full-stack web tools, and dive into problem-solving.";
 
 export default function Hero() {
@@ -22,12 +24,19 @@ export default function Hero() {
     <div className="flex flex-wrap items-stretch gap-3.5" id="home">
       <div className="relative min-w-0 flex-[1_1_320px] rounded-[3px] border border-border bg-bg-panel px-5 pt-[22px] pb-5 max-sm:basis-full">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="relative flex h-16 w-16 flex-none items-center justify-center rounded-full border-2 border-dashed border-border bg-gradient-to-br from-purple to-blue text-[19px] font-extrabold text-bg">
-            EK<span className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-bg-panel px-1 text-[8px] tracking-[.04em] whitespace-nowrap text-text-dim">placeholder</span>
+          <div className="relative flex h-16 w-16 flex-none items-center justify-center rounded-full overflow-hidden border-2 border-dashed border-border bg-gradient-to-br from-purple to-blue text-[19px] font-extrabold">
+            <Image
+              src="/images/profile.jpg"
+              alt="Logo"
+              fill
+              sizes="(max-width: 640px) 96px, 120px"
+              className="object-cover grayscale transition-all duration-200 group-hover:grayscale-0"
+              priority
+            />
           </div>
           <div>
             <h1 className="text-[22px] font-extrabold tracking-[-.01em] text-text-bright">Sop</h1>
-            <div className="mt-0.5 text-[13px] text-purple">CS @ USA · Competitive Prog & Web Dev</div>
+            <div className="mt-0.5 text-[13px] text-purple"> Hobbyist Dev </div>
           </div>
         </div>
         <p className="mt-4 min-h-[2.6em] max-w-[44ch] leading-[1.65] text-text">
