@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { stats } from "@/lib/data";
 
 import Image from "next/image";
+import profileImg from "@/assets/profile.jpg";
 
 const BLURB = "I write code, build full-stack web tools, and dive into problem-solving.";
 
@@ -26,10 +27,10 @@ export default function Hero() {
         <div className="flex flex-wrap items-center gap-5">
           <div className="relative flex h-20 w-20 flex-none items-center justify-center rounded-full overflow-hidden border-2 border-dashed border-border bg-gradient-to-br from-purple to-blue text-[22px] font-extrabold">
             <Image
-              src="/images/profile.jpg"
+              src={profileImg}
               alt="Logo"
-              fill
-              sizes="(max-width: 640px) 96px, 120px"
+              width={120}
+              height={120}
               className="object-cover grayscale transition-all duration-200 group-hover:grayscale-0"
               priority
             />
