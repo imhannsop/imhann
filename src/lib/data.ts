@@ -114,15 +114,15 @@ export const projects: Project[] = [
   },
 ];
 
-export interface Cert {
+export type Cert = {
   name: string;
   issuer: string;
-  year: string;
-  /** Imported StaticImageData (preferred) or raw string path */
-  image?: string | StaticImageData;
-  /** Optional external verification or certificate link */
+  year: string | number;
+  image?: string;
   url?: string;
-}
+  summary?: string;   // add
+  tags?: string[];    // add
+};
 
 export const certs: Cert[] = [
   {
