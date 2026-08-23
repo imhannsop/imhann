@@ -18,7 +18,6 @@ function spineColor(color: string) {
   return SPINE_COLORS[color] ?? SPINE_COLORS.c1;
 }
 
-// Niri WM-style spring for initial card expansion
 const NIRI_SPRING = {
   type: "spring",
   stiffness: 750,
@@ -26,7 +25,6 @@ const NIRI_SPRING = {
   mass: 0.8,
 } as const;
 
-// Realistic paper page flip easing (cubic-bezier tuned for paper weight and flip momentum)
 const PAGE_FLIP_TRANSITION = {
   duration: 0.95,
   ease: [0.645, 0.045, 0.355, 1],
@@ -72,11 +70,11 @@ export default function Blogs() {
         className="relative scroll-mt-24 sm:scroll-mt-28 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
         id="blogs"
       >
-        <div className="mb-6 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
+        <div className="absolute -top-[9px] left-4 bg-bg px-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
           blogs — the library
         </div>
 
-        <div className="overflow-x-auto pb-2">
+        <div className="overflow-x-auto pb-2 mt-2">
           <div className="flex min-w-min items-end gap-3 border-b-3 border-black px-2 pb-6 pt-4">
             {books.map((b, i) => (
               <BookSpine
@@ -153,7 +151,6 @@ function Modal({
 }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-black/70"
         onClick={onClose}
@@ -163,7 +160,6 @@ function Modal({
         transition={FADE_TRANSITION}
       />
 
-      {/* Morphing Layout Container */}
       <motion.div
         layoutId={`book-card-${book.title}`}
         transition={NIRI_SPRING}
@@ -177,16 +173,13 @@ function Modal({
           <X size={18} />
         </button>
 
-        {/* 3D Book Stage */}
         <div
           className="relative h-full w-full [perspective:1800px] [transform-style:preserve-3d]"
           role="dialog"
           aria-modal="true"
           aria-label={book.title}
         >
-          {/* Inside Page (Right hand page) */}
           <div className="absolute inset-0 overflow-y-auto overscroll-contain [scrollbar-gutter:stable] bg-paper p-6 sm:p-12 text-paper-ink [backface-visibility:hidden]">
-            {/* Spine seam shadow overlay */}
             <motion.div
               animate={{ opacity: flipped ? 0 : 0.35 }}
               transition={PAGE_FLIP_TRANSITION}
@@ -214,7 +207,6 @@ function Modal({
             </motion.div>
           </div>
 
-          {/* Front Cover / Flipping Page */}
           <motion.div
             onClick={onToggleFlip}
             style={{
@@ -229,14 +221,12 @@ function Modal({
             transition={PAGE_FLIP_TRANSITION}
             className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center p-8 text-center [backface-visibility:hidden]"
           >
-            {/* Dynamic Page Shadow (Deepens mid-flip) */}
             <motion.div
               animate={{ opacity: flipped ? 0.4 : 0 }}
               transition={PAGE_FLIP_TRANSITION}
               className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"
             />
 
-            {/* Page Crease Highlight Line on the left hinge */}
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-[2px] bg-black/20" />
 
             <div className="select-none relative z-10">

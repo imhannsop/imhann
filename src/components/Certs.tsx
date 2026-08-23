@@ -37,11 +37,11 @@ export default function Certs() {
       id="certs"
       className="relative w-full scroll-mt-24 sm:scroll-mt-28 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
     >
-      <div className="mb-6 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
+      <div className="absolute -top-[9px] left-4 bg-bg px-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
         certifications & achievements
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
         {visible.map((c) => (
           <CertCard
             key={c.name}

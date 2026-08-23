@@ -141,7 +141,7 @@ export default function GitHubCalendar() {
 
         {/* Calendar Grid wrapper for horizontal scroll on mobile */}
         <div className="overflow-x-auto pb-2 scrollbar-thin">
-          <div className="min-w-[620px] flex flex-col gap-1.5 pt-2">
+          <div className="min-w-[1080px] flex flex-col gap-1.5 pt-2">
             {/* Month Labels */}
             <div className="grid grid-cols-[30px_1fr] gap-3 text-[10px] font-semibold text-text-dim uppercase select-none">
               <div />
@@ -150,7 +150,7 @@ export default function GitHubCalendar() {
                   <span
                     key={`${m.name}-${m.index}`}
                     className="absolute"
-                    style={{ left: `${m.index * 15.5}px` }}
+                    style={{ left: `${m.index * 20}px` }}
                   >
                     {m.name}
                   </span>
@@ -161,18 +161,18 @@ export default function GitHubCalendar() {
             {/* Grid Container */}
             <div className="grid grid-cols-[30px_1fr] gap-3">
               {/* Day of Week Labels */}
-              <div className="flex flex-col justify-between text-[10px] py-1 font-semibold text-text-dim uppercase h-[105px] select-none">
+              <div className="flex flex-col justify-between text-[10px] py-1 font-semibold text-text-dim uppercase h-[136px] select-none">
                 <span>Mon</span>
                 <span>Wed</span>
                 <span>Fri</span>
               </div>
 
               {/* Grid block (53 weeks x 7 days) */}
-              <div className="grid grid-flow-col auto-cols-[12px] grid-rows-7 gap-[3.5px] h-[105px]">
+              <div className="grid grid-flow-col auto-cols-[16px] grid-rows-7 gap-[4px] h-[136px]">
                 {weeks.map((week, wIdx) =>
                   week.map((day, dIdx) => {
                     if (!day.date) {
-                      return <div key={`empty-${wIdx}-${dIdx}`} className="h-[12px] w-[12px] opacity-0" />;
+                      return <div key={`empty-${wIdx}-${dIdx}`} className="h-[16px] w-[16px] opacity-0" />;
                     }
 
                     return (
@@ -180,17 +180,16 @@ export default function GitHubCalendar() {
                         key={`${wIdx}-${dIdx}-${day.date}`}
                         onMouseEnter={() => setHoveredDay(day)}
                         onMouseLeave={() => setHoveredDay(null)}
-                        className={`h-[12px] w-[12px] rounded-[2px] transition-all cursor-pointer ${
-                          day.level === 0
+                        className={`h-[16px] w-[16px] rounded-[2px] transition-all cursor-pointer ${day.level === 0
                             ? "bg-bg-raised border border-border-dim hover:bg-border"
                             : day.level === 1
-                            ? "bg-[#22c55e]/20 hover:scale-115"
-                            : day.level === 2
-                            ? "bg-[#22c55e]/40 hover:scale-115"
-                            : day.level === 3
-                            ? "bg-[#22c55e]/70 hover:scale-115"
-                            : "bg-[#22c55e] hover:scale-115"
-                        }`}
+                              ? "bg-[#22c55e]/20 hover:scale-115"
+                              : day.level === 2
+                                ? "bg-[#22c55e]/40 hover:scale-115"
+                                : day.level === 3
+                                  ? "bg-[#22c55e]/70 hover:scale-115"
+                                  : "bg-[#22c55e] hover:scale-115"
+                          }`}
                         style={{
                           border: day.level > 0 ? "1px solid black" : undefined,
                           boxShadow: day.level > 2 ? "1.5px 1.5px 0px black" : undefined,
@@ -218,11 +217,11 @@ export default function GitHubCalendar() {
 
           <div className="flex items-center gap-1.5 select-none">
             <span>Less</span>
-            <div className="h-3 w-3 rounded-[2px] border border-border-dim bg-bg-raised" />
-            <div className="h-3 w-3 rounded-[2px] border border-black bg-[#22c55e]/20" />
-            <div className="h-3 w-3 rounded-[2px] border border-black bg-[#22c55e]/40" />
-            <div className="h-3 w-3 rounded-[2px] border border-black bg-[#22c55e]/70" />
-            <div className="h-3 w-3 rounded-[2px] border border-black bg-[#22c55e]" />
+            <div className="h-4 w-4 rounded-[2px] border border-border-dim bg-bg-raised" />
+            <div className="h-4 w-4 rounded-[2px] border border-black bg-[#22c55e]/20" />
+            <div className="h-4 w-4 rounded-[2px] border border-black bg-[#22c55e]/40" />
+            <div className="h-4 w-4 rounded-[2px] border border-black bg-[#22c55e]/70" />
+            <div className="h-4 w-4 rounded-[2px] border border-black bg-[#22c55e]" />
             <span>More</span>
           </div>
         </div>
