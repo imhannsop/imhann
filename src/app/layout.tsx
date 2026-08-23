@@ -24,7 +24,7 @@ const fraunces = Fraunces({
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export const metadata: Metadata = {
-  title: "imhannsop — Portfolio",
+  title: "imhannsop",
   description:
     "CS student building neobrutalist web apps and customizing Linux systems. Focused on low-level control, neat terminal setups, and high-impact interfaces.",
   metadataBase: new URL(
