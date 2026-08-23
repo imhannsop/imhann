@@ -8,7 +8,6 @@ export default function Contact() {
   return (
     <div className="relative scroll-mt-24 sm:scroll-mt-28 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" id="contact">
       <div className="mb-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">contact</div>
-      <div className="mb-6 text-sm sm:text-base text-text-dim">design only for now — no backend wired up yet.</div>
       <div className="flex max-w-2xl flex-col gap-5">
         <div>
           <label className="mb-2 block text-sm tracking-[.04em] font-medium text-text-dim before:content-['$_'] before:text-green">
