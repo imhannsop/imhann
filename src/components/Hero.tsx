@@ -37,7 +37,7 @@ export default function Hero() {
         </p>
 
         <p className="mt-3 text-[#82181a] sm:text-base text-sm">
-          Note: This website is still WIP - expect bugs :)
+          Still a work in progress — some things may break.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">

@@ -14,8 +14,7 @@ export default function About() {
           3+ years of daily-driver Linux experience with a focus on system customization, efficiency, and developer workflow automation.
         </p>
         <p>
-          Beyond web development, I’m fascinated by systems automation, developer tooling, and workflow optimization.
-          Currently: Building side projects, sharpening my C++ fundamentals, and looking for Software Engineering, Web Development, or DevOps internships.
+          Beyond web development, I’m fascinated by systems automation, developer tooling, and workflow optimization.   Currently building side projects, sharpening my C++ fundamentals, and looking for Software Engineering, Web Development, or DevOps internships.
         </p>
       </div>
     </div>
