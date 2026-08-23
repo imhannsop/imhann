@@ -23,7 +23,7 @@ export default function Navbar() {
     >
       <div className="flex w-full flex-wrap items-center justify-between gap-3 px-6 py-3.5 sm:px-7 sm:py-4">
         <button
-          onClick={() => scrollToSection("home")}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="cursor-pointer text-xl font-bold tracking-tight text-text-bright transition-colors hover:text-purple"
         >
           imhannsop
@@ -32,11 +32,10 @@ export default function Navbar() {
           {crumbLinks.map((id) => (
             <button
               key={id}
-              className={`cursor-pointer px-3 py-1.5 text-sm sm:text-base transition-all duration-150 ${
-                active === id
-                  ? "font-bold text-text-bright underline underline-offset-8 decoration-2 decoration-purple"
-                  : "font-medium text-text hover:text-text-bright"
-              }`}
+              className={`cursor-pointer px-3 py-1.5 text-sm sm:text-base transition-all duration-150 ${active === id
+                ? "font-bold text-text-bright underline underline-offset-8 decoration-2 decoration-purple"
+                : "font-medium text-text hover:text-text-bright"
+                }`}
               onClick={() => scrollToSection(id)}
             >
               {id}
