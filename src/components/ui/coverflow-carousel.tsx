@@ -19,25 +19,17 @@ export interface CoverflowSlide {
   alt?: string;
   title?: string;
   subtitle?: string;
-  /** Tech-stack / keyword badges */
   tags?: string[];
-  /** GitHub repo URL */
   githubUrl?: string;
-  /** Live demo URL */
   liveUrl?: string;
 }
 
 export interface CoverflowCarouselProps {
   slides: CoverflowSlide[];
-  /** Show title + subtitle + tags + links beneath the carousel */
   showCaption?: boolean;
-  /** Show left / right arrow buttons */
   showNavigation?: boolean;
-  /** Show dot pagination */
   showPagination?: boolean;
-  /** Auto-rotate interval in ms (0 = disabled) */
   autoPlay?: number;
-  /** Extra className on the root wrapper */
   className?: string;
 }
 
@@ -59,17 +51,12 @@ export default function CoverflowCarousel({
 
   const total = slides.length;
 
-  /* ---------- helpers ---------- */
-
   const go = useCallback(
-    (dir: 1 | -1) =>
-      setActive((prev) => (prev + dir + total) % total),
+    (dir: 1 | -1) => setActive((prev) => (prev + dir + total) % total),
     [total],
   );
 
   const goTo = useCallback((idx: number) => setActive(idx), []);
-
-  /* ---------- autoplay ---------- */
 
   useEffect(() => {
     if (!autoPlay) return;
@@ -79,7 +66,6 @@ export default function CoverflowCarousel({
     };
   }, [autoPlay, go]);
 
-  /* pause on hover */
   const pause = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
@@ -87,8 +73,6 @@ export default function CoverflowCarousel({
     if (!autoPlay) return;
     intervalRef.current = setInterval(() => go(1), autoPlay);
   };
-
-  /* ---------- swipe ---------- */
 
   const onTouchStart = (e: ReactTouchEvent) => {
     touchRef.current = e.touches[0].clientX;
@@ -100,26 +84,22 @@ export default function CoverflowCarousel({
     touchRef.current = null;
   };
 
-  /* ---------- keyboard ---------- */
-
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") go(-1);
     if (e.key === "ArrowRight") go(1);
   };
 
   /* ---------- per-slide style ---------- */
-
   const slideStyle = (idx: number): React.CSSProperties => {
     const offset = idx - active;
     const abs = Math.abs(offset);
 
-    // Only render neighbours within ±2
     if (abs > 2) return { opacity: 0, pointerEvents: "none", position: "absolute" };
 
-    const translateX = offset * 260;           // horizontal spread
-    const translateZ = -abs * 180;             // depth
-    const rotateY = offset < 0 ? 45 : offset > 0 ? -45 : 0;
-    const scale = offset === 0 ? 1 : 0.78;
+    const translateX = offset * 220;
+    const translateZ = -abs * 150;
+    const rotateY = offset < 0 ? 40 : offset > 0 ? -40 : 0;
+    const scale = offset === 0 ? 1 : 0.75;
     const opacity = offset === 0 ? 1 : abs === 1 ? 0.6 : 0.3;
     const zIndex = 10 - abs;
 
@@ -132,13 +112,7 @@ export default function CoverflowCarousel({
     };
   };
 
-  /* ---------- active slide data ---------- */
-
   const current = slides[active];
-
-  /* ---------------------------------------------------------------- */
-  /*  Render                                                           */
-  /* ---------------------------------------------------------------- */
 
   return (
     <div
@@ -153,8 +127,8 @@ export default function CoverflowCarousel({
     >
       {/* ---- stage ---- */}
       <div
-        className="relative flex items-center justify-center w-full overflow-hidden"
-        style={{ perspective: "1200px", height: "340px" }}
+        className="relative flex items-center justify-center w-full overflow-visible h-[260px] sm:h-[300px]"
+        style={{ perspective: "1200px" }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -173,7 +147,6 @@ export default function CoverflowCarousel({
                 className="block h-[260px] w-[460px] object-cover sm:h-[300px] sm:w-[520px]"
                 draggable={false}
               />
-              {/* subtle gloss overlay on active */}
               {idx === active && (
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[.06] to-transparent" />
               )}
@@ -203,82 +176,72 @@ export default function CoverflowCarousel({
       )}
 
       {/* ---- pagination dots ---- */}
-      {showPagination && total > 1 && (
-        <div className="flex items-center gap-2" role="tablist">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => goTo(idx)}
-              className={`h-1.5 rounded-full border border-black transition-all duration-300 cursor-pointer ${idx === active
-                ? "w-6 bg-text-bright"
-                : "w-1.5 bg-border hover:bg-text-dim"
+      {showPagination && (
+        <div className="flex h-1.5 items-center gap-2 mt-1" role="tablist">
+          {total > 1 &&
+            slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goTo(idx)}
+                className={`h-1.5 rounded-full border border-black transition-all duration-300 cursor-pointer ${
+                  idx === active
+                    ? "w-6 bg-text-bright"
+                    : "w-1.5 bg-border hover:bg-text-dim"
                 }`}
-              role="tab"
-              aria-selected={idx === active}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
+                role="tab"
+                aria-selected={idx === active}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
         </div>
       )}
 
       {/* ---- caption block ---- */}
       {showCaption && current && (
-        <div className="flex w-full max-w-xl flex-col items-center gap-3 overflow-hidden px-4 text-center h-[184px] sm:h-[204px]">
-          {/* title */}
-          {current.title && (
-            <h3 className="truncate text-lg sm:text-xl font-bold text-text-bright tracking-tight">
-              {current.title}
-            </h3>
-          )}
+        <div className="flex w-full max-w-xl flex-col items-center gap-3 overflow-hidden px-4 text-center min-h-[164px] sm:min-h-[184px]">
+          <h3 className="truncate text-lg sm:text-xl font-bold text-text-bright tracking-tight">
+            {current.title}
+          </h3>
 
-          {/* subtitle / description */}
-          {current.subtitle && (
-            <p className="line-clamp-2 text-sm sm:text-base text-text-dim leading-relaxed">
-              {current.subtitle}
-            </p>
-          )}
+          <p className="line-clamp-2 h-[2.6rem] sm:h-[3rem] text-sm sm:text-base text-text-dim leading-relaxed">
+            {current.subtitle}
+          </p>
 
-          {/* tags */}
-          {current.tags && current.tags.length > 0 && (
-            <div className="flex max-h-8 flex-wrap justify-center gap-2 overflow-hidden">
-              {current.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-md border-2 border-black bg-bg-panel px-2.5 py-1 font-mono text-xs text-amber"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="flex min-h-8 max-h-8 flex-wrap justify-center gap-2 overflow-hidden">
+            {current.tags?.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-md border-2 border-black bg-bg-panel px-2.5 py-1 font-mono text-xs text-amber"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
 
-          {/* action buttons */}
-          {(current.githubUrl || current.liveUrl) && (
-            <div className="flex items-center justify-center gap-3">
-              {current.githubUrl && (
-                <a
-                  href={current.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
-                >
-                  <Code2 size={14} />
-                  GitHub
-                </a>
-              )}
-              {current.liveUrl && (
-                <a
-                  href={current.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
-                >
-                  <ExternalLink size={14} />
-                  Live Demo
-                </a>
-              )}
-            </div>
-          )}
+          <div className="flex min-h-[38px] items-center justify-center gap-3">
+            {current.githubUrl && (
+              <a
+                href={current.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
+              >
+                <Code2 size={14} />
+                GitHub
+              </a>
+            )}
+            {current.liveUrl && (
+              <a
+                href={current.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
+              >
+                <ExternalLink size={14} />
+                Live Demo
+              </a>
+            )}
+          </div>
         </div>
       )}
     </div>
