@@ -1,18 +1,18 @@
 export default function About() {
   return (
-    <div className="relative scroll-mt-5 rounded-[3px] border border-border bg-bg-panel px-6 py-6" id="about">
-      <div className="mb-4 text-xs tracking-[.12em] text-text-dim uppercase">about me</div>
-      <div className="max-w-[66ch] text-base leading-[1.75] text-text">
+    <div
+      id="about"
+      className="relative flex flex-col justify-between h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scroll-mt-24 sm:scroll-mt-28"
+    >
+      <div className="mb-5 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">about me</div>
+      <div className="w-full space-y-3.5 text-sm sm:text-base leading-[1.7] text-text">
         <p>
-          Placeholder bio — swap this for your real story. e.g. "I'm a{" "}
-          <span className="text-amber">CS student</span> based in the US who spends most nights between{" "}
-          <span className="text-amber">competitive programming</span> contests and shipping small full-stack
-          tools that actually get used."
+          I&apos;m currently pursuing my Computer Science degree at the University of San Agustin.
+          A lot of my focus is geared toward algorithmic problem-solving and training for competitive programming contests in C++.
         </p>
-        <p className="mt-3">
-          What I'm currently exploring: <span className="text-amber">RAG systems</span>, distributed
-          systems fundamentals, and building tools for local communities back home. Open to
-          internships and collab on interesting side projects.
+        <p>
+          Beyond algorithms, I enjoy building highly tactile web applications, optimizing workflows, and setting up automated build pipelines.
+          I am eager to apply my systems automation knowledge in DevOps roles, and I am actively looking for internships and collaborative software projects.
         </p>
       </div>
     </div>

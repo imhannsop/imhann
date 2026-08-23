@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { crumbLinks } from "@/lib/data";
 import { scrollToSection, useActiveSection } from "@/lib/useActiveSection";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -17,26 +18,34 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 z-50 hidden w-full border-b border-border bg-bg-panel backdrop-blur transition-shadow duration-200 sm:block ${
-        scrolled ? "shadow-[0_10px_26px_rgba(0,0,0,.45)]" : ""
-      }`}
+      className={`sticky top-4 sm:top-6 z-50 hidden w-full rounded-xl border-3 border-black bg-[var(--color-bg-panel)]/90 backdrop-blur-md shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:block ${scrolled ? "bg-[var(--color-bg-panel)]/95" : ""
+        }`}
     >
-      <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center justify-between gap-2 px-4 py-3.5 sm:px-6 lg:px-8">
-        <div className="text-lg font-bold text-text-bright">
+      <div className="flex w-full flex-wrap items-center justify-between gap-3 px-6 py-3.5 sm:px-7 sm:py-4">
+        <button
+          onClick={() => scrollToSection("home")}
+          className="cursor-pointer text-xl font-bold tracking-tight text-text-bright transition-colors hover:text-purple"
+        >
           imhannsop
-        </div>
-        <div className="flex flex-wrap gap-0.5 text-text-dim">
+        </button>
+        <div className="flex items-center gap-2">
           {crumbLinks.map((id) => (
             <button
               key={id}
-              className={`cursor-pointer rounded-sm px-2.5 py-1.5 text-sm hover:bg-bg-raised hover:text-purple ${
-                active === id ? "text-green" : ""
+              className={`cursor-pointer px-3 py-1.5 text-sm sm:text-base transition-all duration-150 ${
+                active === id
+                  ? "font-bold text-text-bright underline underline-offset-8 decoration-2 decoration-purple"
+                  : "font-medium text-text hover:text-text-bright"
               }`}
               onClick={() => scrollToSection(id)}
             >
               {id}
             </button>
           ))}
+          {/* Theme toggle sits right after "contact" */}
+          <div className="ml-1.5 border-l border-border pl-2.5">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </nav>

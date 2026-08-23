@@ -13,95 +13,128 @@ export const mobileNavItems = [
 
 export const stats = [
   { label: "OS", value: "Arch Linux" },
-  { label: "Host", value: "ThinkPad T420" },
-  { label: "WM", value: "niri / SwayFX" },
-  { label: "Shell", value: "zsh + nvim" },
-  { label: "Lang", value: "C++, TS" },
+  { label: "Host", value: "EXT-215-54" },
+  { label: "WM", value: "niri" },
+  { label: "Shell", value: "bash" },
 ];
 
 export const skillGroups = [
   {
     title: "LANGUAGES",
     items: [
-      { name: "C++", level: "advanced", pct: 90 },
-      { name: "TypeScript", level: "advanced", pct: 82 },
-      { name: "Python", level: "proficient", pct: 70 },
+      { name: "C / C++", level: "advanced", pct: 85 },
+      { name: "TypeScript / JS", level: "advanced", pct: 85 },
+      { name: "Python", level: "intermediate", pct: 65 },
+      { name: "Bash / Lua", level: "intermediate", pct: 60 },
     ],
   },
   {
-    title: "FRAMEWORKS",
+    title: "FRAMEWORKS & RUNTIMES",
     items: [
-      { name: "Next.js", level: "proficient", pct: 78 },
-      { name: "React", level: "proficient", pct: 80 },
-      { name: "Tailwind", level: "comfortable", pct: 65 },
+      { name: "Next.js", level: "advanced", pct: 85 },
+      { name: "React", level: "advanced", pct: 80 },
+      { name: "Tailwind CSS", level: "advanced", pct: 90 },
+      { name: "Node.js", level: "intermediate", pct: 65 },
+      { name: "Expo", level: "learning", pct: 45 },
     ],
   },
   {
-    title: "TOOLS & PLATFORMS",
+    title: "TOOLS & INFRASTRUCTURE",
     items: [
-      { name: "Git", level: "advanced", pct: 88 },
-      { name: "Docker", level: "comfortable", pct: 60 },
-      { name: "Linux / Arch", level: "advanced", pct: 85 },
+      { name: "Linux / Arch", level: "advanced", pct: 90 },
+      { name: "Git", level: "advanced", pct: 80 },
+      { name: "Supabase / Firebase", level: "intermediate", pct: 65 },
+      { name: "CMake", level: "intermediate", pct: 60 },
+      { name: "Figma", level: "beginner", pct: 40 },
     ],
   },
 ];
 
-export const projects = [
+import type { StaticImageData } from "next/image";
+
+// You can either:
+// 1. Place project screenshots in public/images/ and use string paths (e.g., "/images/my-project.jpg")
+// 2. Or import image files directly from src/assets/ (e.g., `import myProjectImg from "@/assets/my-project.jpg"`)
+
+export interface Project {
+  file?: string;
+  idx?: string;
+  name: string;
+  desc: string;
+  tags: string[];
+  detail?: string;
+  /** Image path (e.g. "/images/project.jpg") or imported StaticImageData */
+  image: string | StaticImageData;
+  githubUrl?: string;
+  liveUrl?: string;
+}
+
+export const projects: Project[] = [
   {
     file: "01-clinic-portal.md",
     idx: "01.",
     name: "San Agustin Clinic Portal",
     desc: "Full-stack health administration system for student services.",
-    tags: ["Next.js", "TypeScript", "Tailwind"],
+    tags: ["C++", "TypeScript", "Tailwind"],
     detail:
       "Appointment scheduling, patient records, and staff dashboards for campus health services. Auth, role-based access, and audit logging included.",
+    image: "/images/projects/1/SACM2.jpg",
+    githubUrl: "https://github.com/ekoubuyoi/clinic-portal",
+    liveUrl: "https://clinic.sanagustin.edu.ph",
   },
   {
     file: "02-ragbot-ai.md",
     idx: "02.",
     name: "RAGBOT AI",
     desc: "Disaster response coordination platform for barangay safety.",
-    tags: ["C++", "Full-Stack", "RAG"],
+    tags: ["Full-Stack", "RAG"],
     detail:
       "Retrieval-augmented assistant surfacing local emergency protocols, built for low-bandwidth, high-urgency use at the barangay level.",
+    image: "/images/projects/2/ragbot.png",
+    githubUrl: "https://github.com/ekoubuyoi/ragbot-ai",
+  },
+  {
+    file: "03-overcast.md",
+    idx: "03.",
+    name: "Overcast",
+    desc: "niri rice.",
+    tags: ["QML", "Linux"],
+    detail:
+      "A qt-based shell with blur and fuzzy-search features.",
+    image: "/images/projects/3/overcast.jpg",
+    githubUrl: "https://github.com/ekoubuyoi/overcast",
   },
 ];
 
-export const certs = [
-  { name: "Certificate Name", issuer: "Issuer", year: "2025" },
-  { name: "Certificate Name", issuer: "Issuer", year: "2025" },
-  { name: "Certificate Name", issuer: "Issuer", year: "2024" },
+export interface Cert {
+  name: string;
+  issuer: string;
+  year: string;
+  /** Image path (e.g. "/images/certs/cert-1.jpg") or imported StaticImageData */
+  image?: string | StaticImageData;
+  /** Optional external verification or certificate link */
+  url?: string;
+}
+
+export const certs: Cert[] = [
+  {
+    name: "DevFest 2025 Bacolod",
+    issuer: "Issuer",
+    year: "2025",
+    image: "/images/certs/devfest.png",
+    url: "#",
+  },
 ];
 
 export const books = [
   {
     color: "c1",
-    title: "Notes on Competitive Programming",
+    title: "Sample",
     meta: "Aug 2026 · 4 min read",
     excerpt:
-      "Placeholder excerpt — thoughts on training for contests, pattern recognition, and the grind of upsolving.",
+      "This book is a placeholder"
   },
-  {
-    color: "c2",
-    title: "Building RagBot AI",
-    meta: "Jul 2026 · 6 min read",
-    excerpt:
-      "Placeholder excerpt — how the retrieval pipeline came together for barangay-level disaster response.",
-  },
-  {
-    color: "c3",
-    title: "Arch + Nvim Setup",
-    meta: "Jun 2026 · 3 min read",
-    excerpt:
-      "Placeholder excerpt — the dotfiles, plugins, and workflow that make up the daily driver setup.",
-  },
-  {
-    color: "c4",
-    title: "Full-Stack Lessons",
-    meta: "May 2026 · 5 min read",
-    excerpt:
-      "Placeholder excerpt — things learned shipping the clinic portal end to end, from schema to deploy.",
-  },
+
 ];
 
 // terminal: files "cat" can read, and sections "cd" can jump to

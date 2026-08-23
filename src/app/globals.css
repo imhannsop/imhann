@@ -1,6 +1,34 @@
 @import "tailwindcss";
 
-@theme {
+/* ------------------------------------------------------------------ */
+/*  Light mode (default)                                               */
+/* ------------------------------------------------------------------ */
+:root {
+  --color-bg: #f5f5f5;
+  --color-bg-panel: #ffffff;
+  --color-bg-raised: #ececec;
+  --color-border: #d4d4d4;
+  --color-border-dim: #e5e5e5;
+  --color-text: #525252;
+  --color-text-dim: #a3a3a3;
+  --color-text-bright: #171717;
+  --color-accent: #171717;
+  --color-green: #171717;
+  --color-blue: #171717;
+  --color-amber: #44403c;
+  --color-red: #dc2626;
+  --color-paper: #ffffff;
+  --color-paper-ink: #000000;
+  --color-emerald: #171717;
+  --color-cyan: #0891b2;
+
+  --shadow-strength: 0.08;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Dark mode (.dark class on <html>)                                  */
+/* ------------------------------------------------------------------ */
+.dark {
   --color-bg: #000000;
   --color-bg-panel: #0a0a0a;
   --color-bg-raised: #141414;
@@ -13,12 +41,38 @@
   --color-green: #ffffff;
   --color-blue: #ffffff;
   --color-amber: #e5e5e5;
-  --color-red: #ef4444; /* Retained subtle red for destructive/error states */
+  --color-red: #ef4444;
   --color-paper: #ffffff;
   --color-paper-ink: #000000;
   --color-emerald: #ffffff;
   --color-cyan: #06b6d4;
 
+  --shadow-strength: 0.55;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Tailwind v4 @theme — maps design tokens to CSS variables           */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-bg: var(--color-bg);
+  --color-bg-panel: var(--color-bg-panel);
+  --color-bg-raised: var(--color-bg-raised);
+  --color-border: var(--color-border);
+  --color-border-dim: var(--color-border-dim);
+  --color-text: var(--color-text);
+  --color-text-dim: var(--color-text-dim);
+  --color-text-bright: var(--color-text-bright);
+  --color-accent: var(--color-accent);
+  --color-green: var(--color-green);
+  --color-blue: var(--color-blue);
+  --color-amber: var(--color-amber);
+  --color-red: var(--color-red);
+  --color-paper: var(--color-paper);
+  --color-paper-ink: var(--color-paper-ink);
+  --color-emerald: var(--color-emerald);
+  --color-cyan: var(--color-cyan);
+
+  --font-cause: var(--font-cause), sans-serif;
   --font-mono: var(--font-jbmono), monospace;
   --font-serif: var(--font-fraunces), serif;
 
@@ -37,6 +91,15 @@
   }
 }
 
+body {
+  font-family: var(--font-jbmono), monospace;
+}
+
+/* Keep ASCII art monospaced for correct glyph alignment */
+pre {
+  font-family: var(--font-jbmono), monospace;
+}
+
 *:focus-visible {
   outline: 2px solid var(--color-cyan);
   outline-offset: 2px;
@@ -46,4 +109,21 @@
 .dragging {
   cursor: grabbing;
   box-shadow: 0 12px 30px rgba(255, 255, 255, 0.15);
+}
+
+/* Smooth colour transition when switching themes */
+html,
+html *,
+html *::before,
+html *::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 0.25s;
+  transition-timing-function: ease-out;
+}
+
+/* Opt-out: elements with explicit Tailwind transition classes keep theirs */
+[class*="transition-"] {
+  transition-property: revert;
+  transition-duration: revert;
+  transition-timing-function: revert;
 }
