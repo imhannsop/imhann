@@ -52,9 +52,12 @@ export const skillGroups = [
 
 import type { StaticImageData } from "next/image";
 
-// You can either:
-// 1. Place project screenshots in public/images/ and use string paths (e.g., "/images/my-project.jpg")
-// 2. Or import image files directly from src/assets/ (e.g., `import myProjectImg from "@/assets/my-project.jpg"`)
+// ESM imports — Next.js resolves these to hashed paths that include basePath automatically.
+// This prevents broken images when deployed to GitHub Pages with a subpath (e.g. /imhann/).
+import sacmImg from "@/../public/images/projects/1/SACM2.jpg";
+import ragbotImg from "@/../public/images/projects/2/ragbot.png";
+import overcastImg from "@/../public/images/projects/3/overcast.jpg";
+import devfestImg from "@/../public/images/certs/devfest.png";
 
 export interface Project {
   file?: string;
@@ -63,7 +66,7 @@ export interface Project {
   desc: string;
   tags: string[];
   detail?: string;
-  /** Image path (e.g. "/images/project.jpg") or imported StaticImageData */
+  /** Imported StaticImageData (preferred) or raw string path */
   image: string | StaticImageData;
   githubUrl?: string;
   liveUrl?: string;
@@ -78,7 +81,7 @@ export const projects: Project[] = [
     tags: ["C++", "TypeScript", "Tailwind"],
     detail:
       "Appointment scheduling, patient records, and staff dashboards for campus health services. Auth, role-based access, and audit logging included.",
-    image: "/images/projects/1/SACM2.jpg",
+    image: sacmImg,
     githubUrl: "https://github.com/ekoubuyoi/clinic-portal",
     liveUrl: "https://clinic.sanagustin.edu.ph",
   },
@@ -90,7 +93,7 @@ export const projects: Project[] = [
     tags: ["Full-Stack", "RAG"],
     detail:
       "Retrieval-augmented assistant surfacing local emergency protocols, built for low-bandwidth, high-urgency use at the barangay level.",
-    image: "/images/projects/2/ragbot.png",
+    image: ragbotImg,
     githubUrl: "https://github.com/ekoubuyoi/ragbot-ai",
   },
   {
@@ -101,7 +104,7 @@ export const projects: Project[] = [
     tags: ["QML", "Linux"],
     detail:
       "A qt-based shell with blur and fuzzy-search features.",
-    image: "/images/projects/3/overcast.jpg",
+    image: overcastImg,
     githubUrl: "https://github.com/ekoubuyoi/overcast",
   },
 ];
@@ -110,7 +113,7 @@ export interface Cert {
   name: string;
   issuer: string;
   year: string;
-  /** Image path (e.g. "/images/certs/cert-1.jpg") or imported StaticImageData */
+  /** Imported StaticImageData (preferred) or raw string path */
   image?: string | StaticImageData;
   /** Optional external verification or certificate link */
   url?: string;
@@ -121,7 +124,7 @@ export const certs: Cert[] = [
     name: "DevFest 2025 Bacolod",
     issuer: "Issuer",
     year: "2025",
-    image: "/images/certs/devfest.png",
+    image: devfestImg,
     url: "#",
   },
 ];

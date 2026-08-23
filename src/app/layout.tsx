@@ -21,8 +21,42 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
 });
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export const metadata: Metadata = {
-  title: "imhannsop",
+  title: "imhannsop — Portfolio",
+  description:
+    "CS student building neobrutalist web apps and customizing Linux systems. Focused on low-level control, neat terminal setups, and high-impact interfaces.",
+  metadataBase: new URL(
+    basePath
+      ? `https://ekoubuyoi.github.io${basePath}`
+      : "https://ekoubuyoi.github.io"
+  ),
+  openGraph: {
+    title: "imhannsop — Portfolio",
+    description:
+      "CS student building neobrutalist web apps and customizing Linux systems.",
+    url: "/",
+    siteName: "imhannsop",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "imhannsop portfolio preview",
+      },
+    ],
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "imhannsop — Portfolio",
+    description:
+      "CS student building neobrutalist web apps and customizing Linux systems.",
+    images: ["/opengraph-image.png"],
+  },
+  icons: { icon: "/favicon.ico" },
 };
 
 import Script from "next/script";
