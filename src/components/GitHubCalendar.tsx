@@ -28,7 +28,7 @@ export default function GitHubCalendar() {
   useEffect(() => {
     async function fetchContributions() {
       try {
-        const res = await fetch("https://github-contributions-api.jogruber.de/v4/ekoubuyoi?y=last");
+        const res = await fetch("https://github-contributions-api.jogruber.de/v4/imhannsop?y=last");
         if (!res.ok) throw new Error("Failed to fetch contributions");
         const data = await res.json();
         const rawList: DayContribution[] = data.contributions || [];
@@ -113,7 +113,7 @@ export default function GitHubCalendar() {
   return (
     <div className="relative flex flex-col justify-between h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
       <div className="absolute -top-[9px] left-4 bg-bg px-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
-        github activity (@ekoubuyoi)
+        github activity (@imhannsop)
       </div>
 
       <div className="flex flex-col gap-4">

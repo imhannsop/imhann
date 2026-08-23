@@ -12,18 +12,17 @@ import { Moon, Sun } from "lucide-react";
  * runs before React hydrates, so the first paint is always correct.
  */
 export default function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-  // Prevent hydration mismatch: don't render icon until mounted
-  const [mounted, setMounted] = useState(false);
+  const [{ mounted, dark }, setState] = useState(() => ({ mounted: false, dark: false }));
 
   useEffect(() => {
-    setMounted(true);
-    setDark(document.documentElement.classList.contains("dark"));
+    const isDark = document.documentElement.classList.contains("dark");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setState({ mounted: true, dark: isDark });
   }, []);
 
   const toggle = () => {
     const next = !dark;
-    setDark(next);
+    setState((s) => ({ ...s, dark: next }));
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
   };

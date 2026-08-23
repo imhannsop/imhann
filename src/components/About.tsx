@@ -7,12 +7,12 @@ export default function About() {
       <div className="mb-5 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">about me</div>
       <div className="w-full space-y-3.5 text-sm sm:text-base leading-[1.7] text-text">
         <p>
-          I&apos;m currently pursuing my Computer Science degree at the University of San Agustin.
-          A lot of my focus is geared toward algorithmic problem-solving and training for competitive programming contests in C++.
+          CS sophomore focused on building fast, functional web tools and running lightweight Linux configurations.
+          3+ years of daily-driver Linux experience with a focus on system customization, efficiency, and developer workflow automation.
         </p>
         <p>
-          Beyond algorithms, I enjoy building highly tactile web applications, optimizing workflows, and setting up automated build pipelines.
-          I am eager to apply my systems automation knowledge in DevOps roles, and I am actively looking for internships and collaborative software projects.
+          Beyond web development, I’m fascinated by systems automation, developer tooling, and workflow optimization.
+          Currently: Building side projects, sharpening my C++ fundamentals, and looking for Software Engineering, Web Development, or DevOps internships.
         </p>
       </div>
     </div>

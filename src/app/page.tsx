@@ -21,7 +21,7 @@ export default function Home() {
         <Blogs />
         <Contact />
         <Terminal />
-        <footer className="py-8 text-sm text-border">prototype — interactive concept, not final content</footer>
+        <footer className="mt-6 pt-6 border-t border-border-dim text-center text-sm text-border">@imhannsop</footer>
       </main>
     </>
   );

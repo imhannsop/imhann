@@ -166,8 +166,7 @@ export default function CoverflowCarousel({
             onClick={() => (idx === active ? undefined : goTo(idx))}
             aria-hidden={idx !== active}
           >
-            <div className="relative overflow-hidden rounded-[4px] border border-border-dim shadow-[0_8px_32px_rgba(0,0,0,.55)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+            <div className="relative overflow-hidden rounded-xl border-3 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
               <img
                 src={typeof slide.src === "string" ? slide.src : slide.src.src}
                 alt={slide.alt ?? slide.title ?? `Slide ${idx + 1}`}
@@ -210,11 +209,10 @@ export default function CoverflowCarousel({
             <button
               key={idx}
               onClick={() => goTo(idx)}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                idx === active
-                  ? "w-6 bg-text-bright"
-                  : "w-1.5 bg-border hover:bg-text-dim"
-              }`}
+              className={`h-1.5 rounded-full border border-black transition-all duration-300 cursor-pointer ${idx === active
+                ? "w-6 bg-text-bright"
+                : "w-1.5 bg-border hover:bg-text-dim"
+                }`}
               role="tab"
               aria-selected={idx === active}
               aria-label={`Go to slide ${idx + 1}`}
@@ -225,28 +223,28 @@ export default function CoverflowCarousel({
 
       {/* ---- caption block ---- */}
       {showCaption && current && (
-        <div className="w-full max-w-xl space-y-3 text-center px-4">
+        <div className="flex w-full max-w-xl flex-col items-center gap-3 overflow-hidden px-4 text-center h-[184px] sm:h-[204px]">
           {/* title */}
           {current.title && (
-            <h3 className="text-lg sm:text-xl font-bold text-text-bright tracking-tight">
+            <h3 className="truncate text-lg sm:text-xl font-bold text-text-bright tracking-tight">
               {current.title}
             </h3>
           )}
 
           {/* subtitle / description */}
           {current.subtitle && (
-            <p className="text-sm sm:text-base text-text-dim leading-relaxed">
+            <p className="line-clamp-2 text-sm sm:text-base text-text-dim leading-relaxed">
               {current.subtitle}
             </p>
           )}
 
           {/* tags */}
           {current.tags && current.tags.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-2 pt-1">
+            <div className="flex max-h-8 flex-wrap justify-center gap-2 overflow-hidden">
               {current.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-[3px] border border-border-dim px-2.5 py-1 font-mono text-xs text-amber"
+                  className="rounded-md border-2 border-black bg-bg-panel px-2.5 py-1 font-mono text-xs text-amber"
                 >
                   {tag}
                 </span>
@@ -256,16 +254,16 @@ export default function CoverflowCarousel({
 
           {/* action buttons */}
           {(current.githubUrl || current.liveUrl) && (
-            <div className="flex items-center justify-center gap-3 pt-2">
+            <div className="flex items-center justify-center gap-3">
               {current.githubUrl && (
                 <a
                   href={current.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
                 >
                   <Code2 size={14} />
-                  View GitHub ↗
+                  GitHub
                 </a>
               )}
               {current.liveUrl && (
@@ -273,10 +271,10 @@ export default function CoverflowCarousel({
                   href={current.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
                 >
                   <ExternalLink size={14} />
-                  Live Demo ↗
+                  Live Demo
                 </a>
               )}
             </div>

@@ -64,6 +64,8 @@ export interface Project {
   idx?: string;
   name: string;
   desc: string;
+  /** High-level grouping used to filter the Works carousel */
+  category: string;
   tags: string[];
   detail?: string;
   /** Imported StaticImageData (preferred) or raw string path */
@@ -78,6 +80,7 @@ export const projects: Project[] = [
     idx: "01.",
     name: "San Agustin Clinic Portal",
     desc: "Full-stack health administration system for student services.",
+    category: "Web App",
     tags: ["C++", "TypeScript", "Tailwind"],
     detail:
       "Appointment scheduling, patient records, and staff dashboards for campus health services. Auth, role-based access, and audit logging included.",
@@ -90,6 +93,7 @@ export const projects: Project[] = [
     idx: "02.",
     name: "RAGBOT AI",
     desc: "Disaster response coordination platform for barangay safety.",
+    category: "Web App",
     tags: ["Full-Stack", "RAG"],
     detail:
       "Retrieval-augmented assistant surfacing local emergency protocols, built for low-bandwidth, high-urgency use at the barangay level.",
@@ -101,6 +105,7 @@ export const projects: Project[] = [
     idx: "03.",
     name: "Overcast",
     desc: "niri rice.",
+    category: "Systems",
     tags: ["QML", "Linux"],
     detail:
       "A qt-based shell with blur and fuzzy-search features.",
@@ -122,20 +127,22 @@ export interface Cert {
 export const certs: Cert[] = [
   {
     name: "DevFest 2025 Bacolod",
-    issuer: "Issuer",
+    issuer: "Google Developer Group",
     year: "2025",
     image: devfestImg,
     url: "#",
-  },
+    summary: "Participation and workshop completion at DevFest 2025.",
+    tags: ["Workshops", "Web"],
+  } as unknown as Cert,
 ];
 
 export const books = [
   {
     color: "c1",
-    title: "Sample",
+    title: "Agi si Ling",
     meta: "Aug 2026 · 4 min read",
     excerpt:
-      "This book is a placeholder"
+      "agi ni sa"
   },
 
 ];

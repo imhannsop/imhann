@@ -7,7 +7,7 @@ import profileImg from "@/assets/profile.jpg";
 import About from "./About";
 import GitHubCalendar from "./GitHubCalendar";
 
-const BLURB = "CS student building neobrutalist web apps and customizing Linux systems. Focused on low-level control, neat terminal setups, and high-impact interfaces.";
+const BLURB = "Building distinct web applications and tweaking Linux systems from the terminal up. Driven by OS-level control, workflow automation, and fast, functional user interfaces.";
 
 const FASTFETCH_LOGO = `      /\\
      /  \\
@@ -61,7 +61,7 @@ export default function Hero() {
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
           <a
-            href="https://github.com/ekoubuyoi"
+            href="https://github.com/imhannsop"
             target="_blank"
             rel="noreferrer"
             className="cursor-pointer rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"

@@ -65,20 +65,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth bg-bg" suppressHydrationWarning>
       <head>
-        <Script id="theme-loader" strategy="beforeInteractive">
-          {`
-            try {
-              if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-              }
-            } catch (e) {}
-          `}
-        </Script>
+        <Script src="/theme-loader.js" strategy="beforeInteractive" />
       </head>
       <body
         className={`${cause.variable} ${jetbrainsMono.variable} ${fraunces.variable} flex flex-col items-center bg-bg text-base text-text`}
       >
         {children}
+        {/* <FloatingNavClient /> */}
       </body>
     </html>
   );
