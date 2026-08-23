@@ -59,6 +59,9 @@ export default function Hero() {
             <span className="inline-block h-[1em] w-2 ml-0.5 animate-blink bg-green align-bottom" />
           </p>
         </div>
+        <p className="mt-4 text-[#82181A]">
+          Note: This website is still WIP - expect bugs :)
+        </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <a
             href="https://github.com/imhannsop"
