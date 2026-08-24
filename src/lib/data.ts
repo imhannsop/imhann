@@ -1,12 +1,12 @@
 // All repeatable content lives here as data, not hand-written JSX.
 // Sections map over these arrays instead of copy-pasting markup.
 
-export const crumbLinks = ["about", "skills", "works", "certs", "blogs", "contact"] as const;
+export const crumbLinks = ["about", "works", "certs", "blogs", "contact"] as const;
 
 export const mobileNavItems = [
   { id: "home", label: "Home", icon: "home" as const },
-  { id: "about", label: "About", icon: "about" as const },
   { id: "works", label: "Works", icon: "works" as const },
+  { id: "certs", label: "Certs", icon: "certs" as const },
   { id: "blogs", label: "Blogs", icon: "blogs" as const },
   { id: "contact", label: "Contact", icon: "contact" as const },
 ];
@@ -85,8 +85,8 @@ export const projects: Project[] = [
     detail:
       "Appointment scheduling, patient records, and staff dashboards for campus health services. Auth, role-based access, and audit logging included.",
     image: sacmImg,
-    githubUrl: "https://github.com/ekoubuyoi/clinic-portal",
-    liveUrl: "https://clinic.sanagustin.edu.ph",
+    githubUrl: "https://github.com/matchaejayyy/Computer-Programming-2-",
+    liveUrl: "https://computer-programming-2.vercel.app/login?fbclid=IwcGRvZgNleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA80Mzc2MjYzMTY5NzM3ODgAAR57Pwh7E9uDuYdknINY0-rcH_g0uRjr5USNeNAg04GqzgYCPVx60WC0ILaGlw_aem_ym1PgBTryLDa9YbHTyi_Yw",
   },
   {
     file: "02-ragbot-ai.md",
@@ -98,7 +98,7 @@ export const projects: Project[] = [
     detail:
       "Retrieval-augmented assistant surfacing local emergency protocols, built for low-bandwidth, high-urgency use at the barangay level.",
     image: ragbotImg,
-    githubUrl: "https://github.com/ekoubuyoi/ragbot-ai",
+    githubUrl: "https://github.com/imhannsop/Ragbot"
   },
   {
     file: "03-overcast.md",
@@ -118,6 +118,8 @@ export type Cert = {
   name: string;
   issuer: string;
   year: string | number;
+  /** High-level grouping used to filter the Certs section: "Events" or "Certifications" */
+  category: "Events" | "Certifications";
   image?: string;
   url?: string;
   summary?: string;   // add
@@ -129,11 +131,14 @@ export const certs: Cert[] = [
     name: "DevFest 2025 Bacolod",
     issuer: "Google Developer Group",
     year: "2025",
+    // Participation/workshop attendance rather than an issued credential —
+    // change to "Certifications" if you'd rather file it there.
+    category: "Events",
     image: devfestImg,
     url: "#",
     summary: "Participation and workshop completion at DevFest 2025.",
     tags: ["Workshops", "Web"],
-  } as unknown as Cert,
+  },
 ];
 
 export const books = [
@@ -144,6 +149,7 @@ export const books = [
     excerpt:
       "agi ni sa"
   },
+
 
 ];
 

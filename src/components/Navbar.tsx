@@ -22,25 +22,28 @@ export default function Navbar() {
         }`}
     >
       <div className="flex w-full flex-wrap items-center justify-between gap-3 px-6 py-3.5 sm:px-7 sm:py-4">
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        {/* Home link */}
+        <a
+          href="/"
           className="cursor-pointer text-xl font-bold tracking-tight text-text-bright transition-colors hover:text-purple"
         >
           imhannsop
-        </button>
+        </a>
         <div className="flex items-center gap-2">
-          {crumbLinks.map((id) => (
-            <button
-              key={id}
-              className={`cursor-pointer px-3 py-1.5 text-sm sm:text-base transition-all duration-150 ${active === id
-                ? "font-bold text-text-bright underline underline-offset-8 decoration-2 decoration-purple"
-                : "font-medium text-text hover:text-text-bright"
-                }`}
-              onClick={() => scrollToSection(id)}
-            >
-              {id}
-            </button>
-          ))}
+          {/* Section links with special handling for "about" */}
+          {crumbLinks.map((id) => {
+            const targetId = id === "about" ? "home" : id;
+            const isActive = active === (id === "about" ? "home" : id);
+            return (
+              <button
+                key={id}
+                className={`cursor-pointer px-3 py-1.5 text-sm sm:text-base transition-all duration-150 ${isActive ? "font-bold text-text-bright underline underline-offset-8 decoration-2 decoration-purple" : "font-medium text-text hover:text-text-bright"}`}
+                onClick={() => scrollToSection(targetId)}
+              >
+                {id}
+              </button>
+            );
+          })}
           {/* Theme toggle sits right after "contact" */}
           <div className="ml-1.5 border-l border-border pl-2.5">
             <ThemeToggle />

@@ -163,7 +163,7 @@ function Modal({
       <motion.div
         layoutId={`book-card-${book.title}`}
         transition={NIRI_SPRING}
-        className="relative z-10 w-[95vw] sm:w-[90vw] md:w-[75vw] lg:w-[65vw] max-w-[850px] h-[85vh] sm:h-[80vh] min-h-[75vh] max-h-[760px] rounded-xl border-3 border-black bg-bg-panel shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
+        className="relative z-10 w-[95vw] sm:w-[92vw] md:w-[85vw] lg:w-[75vw] xl:w-[70vw] max-w-[1100px] h-[85vh] sm:h-[80vh] min-h-[75vh] max-h-[760px] rounded-xl border-3 border-black bg-bg-panel shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
       >
         <button
           onClick={onClose}
