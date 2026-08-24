@@ -45,7 +45,7 @@ export default function Hero() {
             href="https://github.com/imhannsop"
             target="_blank"
             rel="noreferrer"
-            className="cursor-pointer rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+            className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
           >
             GitHub ↗
           </a>
@@ -53,7 +53,7 @@ export default function Hero() {
             href="/resume.pdf"
             target="_blank"
             rel="noreferrer"
-            className="cursor-pointer rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+            className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
           >
             Resume ↗
           </a>

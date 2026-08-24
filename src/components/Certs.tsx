@@ -66,7 +66,7 @@ export default function Certs() {
               setShowAll(false);
             }}
             aria-label="Filter certifications by category"
-            className="cursor-pointer appearance-none rounded-xl border-3 border-black bg-bg-panel py-1.5 pl-3 pr-8 text-xs font-semibold text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-colors hover:bg-bg-raised focus:outline-none"
+            className="cursor-pointer appearance-none rounded-2xl border-3 border-black bg-bg-panel py-2 pl-3 pr-8 text-xs font-semibold text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-colors hover:bg-bg-raised focus:outline-none"
           >
             {categories.map((c) => (
               <option key={c} value={c}>
@@ -112,7 +112,7 @@ export default function Certs() {
         <div className="mt-4 flex h-12 shrink-0 items-center justify-center">
           <button
             onClick={() => setShowAll((s) => !s)}
-            className="inline-flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-md border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text hover:shadow-md transition"
+            className="inline-flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text hover:shadow-md transition"
           >
             {showAll ? "Show Less" : "View All"}
           </button>
@@ -202,10 +202,14 @@ function CertCard({
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative h-full w-full overflow-hidden rounded-2xl border-3 border-black bg-transparent shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"      >
-        {/* The certificate itself fills the card edge-to-edge (translated
-            slightly back in Z so the glass/caption layers pop in front). */}
+        {/* The certificate itself fills the card edge-to-edge on desktop
+            (translated slightly back in Z so the glass/caption layers pop
+            in front). On mobile it switches to object-contain, matching
+            the modal's uncropped preview — object-cover was zooming/
+            cropping the certificate edges on small screens, which reads
+            as "wrong" next to the full-image modal view. */}
         <motion.div
-          className="absolute inset-0"
+          className="absolute inset-0 bg-white sm:bg-transparent"
           animate={{ scale: hovered ? 1.06 : 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           style={{ transform: "translateZ(-10px)" }}
@@ -216,7 +220,7 @@ function CertCard({
               alt={cert.name}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain p-2 sm:object-cover sm:p-0"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-bg-raised text-sm text-white/60">
@@ -248,14 +252,14 @@ function CertCard({
 
         {/* Verified badge, top left — echoes a wax-seal / authenticity mark */}
         <motion.div
-          className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border-2 border-black bg-white px-2.5 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+          className="absolute left-3 top-3 flex items-center gap-1.5 rounded-2xl border-2 border-black bg-white px-2.5 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
           style={{ transform: "translateZ(25px)" }}
           animate={{ y: hovered ? -1 : 0 }}
           transition={{ duration: 0.3 }}
         >
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-2xl bg-emerald-500 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-2xl bg-emerald-500" />
           </span>
           <Award size={12} className="text-black" />
         </motion.div>
@@ -305,18 +309,22 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
 
       {/* Same layoutId as the grid card: Framer Motion animates this
           element seamlessly from the card's screen position/size into
-          this centered, larger layout. */}
+          this centered, larger layout. Capped at 92vh and scrolls
+          internally — the fixed backdrop above always covers the full
+          viewport regardless of how tall this panel's content gets, and
+          nothing inside (image, description, tags, buttons) ever gets
+          cut off by the screen edge on short mobile viewports. */}
       <motion.div
         layoutId={`cert-card-${cert.name}`}
         layout
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="relative z-10 w-full max-w-4xl overflow-hidden rounded-2xl border-3 border-black bg-bg-panel shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+        className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-y-auto overflow-x-hidden overscroll-contain rounded-2xl border-3 border-black bg-bg-panel shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
         role="dialog"
         aria-modal="true"
         aria-label={cert.name}
       >
         <div className="flex flex-col sm:flex-row">
-          <div className="w-full border-b-3 border-black sm:w-1/2 sm:border-b-0 sm:border-r-3">
+          <div className="w-full shrink-0 border-b-3 border-black sm:w-1/2 sm:border-b-0 sm:border-r-3">
             <div className="relative aspect-[7/5] w-full bg-bg-raised">
               {cert.image ? (
                 <Image
@@ -352,7 +360,7 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-black bg-bg-panel text-sm font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition hover:shadow-none"
+                className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-black bg-bg-panel text-sm font-medium shadow-none transition sm:rounded-xl sm:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
               >
                 ✕
               </button>
@@ -367,7 +375,7 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
                 {cert.tags.map((t) => (
                   <span
                     key={t}
-                    className="rounded-full border-2 border-black bg-bg-panel px-3 py-1 text-sm font-medium shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                    className="rounded-full border border-black bg-bg-panel px-3 py-1 text-sm font-medium shadow-none sm:rounded-xl sm:border-2 sm:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                   >
                     {t}
                   </span>
@@ -380,14 +388,14 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
                 href={cert.url || "#"}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border-2 border-black bg-black px-4 py-2 text-sm font-semibold text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition hover:shadow-none"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-black bg-black px-4 py-2 text-sm font-semibold text-white shadow-none transition sm:flex-none sm:rounded-2xl sm:px-4 sm:py-2 sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
               >
                 Verify Credential
               </a>
 
               <button
                 onClick={onClose}
-                className="ml-auto rounded-md border-2 border-black bg-bg-panel px-4 py-2 text-sm font-medium shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition hover:shadow-none"
+                className="ml-auto rounded-2xl border-2 border-black bg-bg-panel px-4 py-2 text-sm font-medium shadow-none transition sm:rounded-2xl sm:px-4 sm:py-2 sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
               >
                 Close
               </button>

@@ -120,7 +120,8 @@ export type Cert = {
   year: string | number;
   /** High-level grouping used to filter the Certs section: "Events" or "Certifications" */
   category: "Events" | "Certifications";
-  image?: string;
+  /** Imported StaticImageData (preferred) or raw string path */
+  image?: string | StaticImageData;
   url?: string;
   summary?: string;   // add
   tags?: string[];    // add

@@ -132,7 +132,7 @@ export default function MobileNav() {
         {mobileNavItems.map((item) => (
           <button
             key={item.id}
-            className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm whitespace-nowrap text-text-dim transition-colors duration-150 hover:bg-bg-raised ${
+            className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-3 text-sm whitespace-nowrap text-text-dim transition-colors duration-150 hover:bg-bg-raised ${
               active === item.id ? "text-green" : ""
             }`}
             aria-label={item.label}

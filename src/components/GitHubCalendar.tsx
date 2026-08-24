@@ -204,7 +204,7 @@ export default function GitHubCalendar() {
         </div>
 
         {/* Bottom Legend and Active Tooltip Info */}
-        <div className="flex items-center justify-between text-xs text-text-dim border-t border-border-dim pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs text-text-dim border-t border-border-dim pt-3">
           <div className="min-h-[16px]">
             {hoveredDay ? (
               <span className="font-bold text-text">

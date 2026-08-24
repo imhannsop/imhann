@@ -7,7 +7,7 @@ import {
   useEffect,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { ChevronLeft, ChevronRight, Code2, ExternalLink } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import type { StaticImageData } from "next/image";
 
 /* ------------------------------------------------------------------ */
@@ -44,8 +44,13 @@ const STIFFNESS = 180;
 const DAMPING = 20;
 const SETTLE_EPSILON = 0.0015;
 
-const SPACING_PX = 220; // horizontal offset per index step
-const DEPTH_PX = 150; // translateZ falloff per index step
+// Desktop "design" geometry. Everything is scaled off the measured stage
+// width at runtime so the coverflow never overflows its container on
+// small screens (see the responsive geometry block in the component).
+const BASE_SLIDE_W = 520;
+const BASE_SLIDE_H = 300;
+const BASE_SPACING = 220; // horizontal offset per index step
+const BASE_DEPTH = 150; // translateZ falloff per index step
 const MAX_ROTATE_DEG = 40;
 const DRAG_CLICK_THRESHOLD = 6; // px of movement before a drag suppresses the click
 const FLING_PROJECTION_MS = 120; // how far ahead (ms) drag velocity is projected to pick a landing slide
@@ -91,6 +96,22 @@ export default function CoverflowCarousel({
   const runningRef = useRef(false);
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Measured stage width drives the responsive geometry — the coverflow
+  // shrinks proportionally on narrow screens instead of bleeding past
+  // the card (which previously caused horizontal page overflow).
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [stageWidth, setStageWidth] = useState(0);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const update = () => setStageWidth(el.clientWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const draggingRef = useRef(false);
   const dragMovedRef = useRef(0);
@@ -188,6 +209,25 @@ export default function CoverflowCarousel({
     intervalRef.current = setInterval(() => go(1), autoPlay);
   };
 
+  /* ---------- responsive geometry ---------- */
+
+  // Fall back to the desktop design width until the stage is measured
+  // (SSR / first paint), then derive all sizes from the real width.
+  const effWidth = stageWidth || 1040;
+  const slideW = Math.min(BASE_SLIDE_W, effWidth * 0.86);
+  const slideH = slideW * (BASE_SLIDE_H / BASE_SLIDE_W);
+  // Cap the per-step offset so NO neighbour slide ever extends past the
+  // stage edge — the root cause of horizontal page overflow on small
+  // screens. The binding constraint is the second-tier neighbour
+  // (offset 2×spacing, scaled 0.55): 2s + 0.275·slideW ≤ stageWidth/2,
+  // which simplifies to the formula below. The first-tier neighbour is
+  // then automatically contained as well.
+  const spacing = Math.max(
+    24,
+    Math.min(BASE_SPACING, effWidth / 4 - slideW * 0.1375),
+  );
+  const depth = spacing * (BASE_DEPTH / BASE_SPACING);
+
   /* ---------- pointer drag (mouse + touch, unified) ---------- */
 
   const onPointerDown = (e: ReactPointerEvent) => {
@@ -213,7 +253,7 @@ export default function CoverflowCarousel({
     const totalDeltaPx = e.clientX - dragStartXRef.current;
     dragMovedRef.current = Math.max(dragMovedRef.current, Math.abs(totalDeltaPx));
 
-    const nextPosition = dragBasePositionRef.current - totalDeltaPx / SPACING_PX;
+    const nextPosition = dragBasePositionRef.current - totalDeltaPx / spacing;
     positionRef.current = nextPosition;
     targetRef.current = nextPosition; // spring has nothing to chase while dragging
     setPosition(nextPosition);
@@ -228,10 +268,10 @@ export default function CoverflowCarousel({
     // hand that velocity to the spring so the settle carries real momentum
     // instead of starting from a dead stop.
     const projected =
-      positionRef.current - (dragVelocityPxMsRef.current * FLING_PROJECTION_MS) / SPACING_PX;
+      positionRef.current - (dragVelocityPxMsRef.current * FLING_PROJECTION_MS) / spacing;
     const nearest = Math.round(projected);
 
-    velocityRef.current = -(dragVelocityPxMsRef.current * 1000) / SPACING_PX;
+    velocityRef.current = -(dragVelocityPxMsRef.current * 1000) / spacing;
     targetRef.current = nearest;
     setActive(((nearest % total) + total) % total);
     ensureLoop();
@@ -251,8 +291,8 @@ export default function CoverflowCarousel({
 
     if (abs > 2.5) return { opacity: 0, pointerEvents: "none", position: "absolute" };
 
-    const translateX = offset * SPACING_PX;
-    const translateZ = -abs * DEPTH_PX;
+    const translateX = offset * spacing;
+    const translateZ = -abs * depth;
     const rotateY = Math.max(-MAX_ROTATE_DEG, Math.min(MAX_ROTATE_DEG, -offset * MAX_ROTATE_DEG));
     const scale = Math.max(0.55, 1 - abs * 0.25);
     const opacity = abs <= 0 ? 1 : Math.max(0, 1 - abs * 0.42);
@@ -282,68 +322,82 @@ export default function CoverflowCarousel({
       aria-roledescription="carousel"
       aria-label="Project showcase"
     >
-      {/* ---- stage ---- */}
-      <div
-        className="relative flex items-center justify-center w-full overflow-visible h-[260px] sm:h-[300px] touch-pan-y cursor-grab active:cursor-grabbing"
-        style={{ perspective: "1200px" }}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onPointerLeave={(e) => {
-          // Only end the drag if the pointer actually leaves while captured —
-          // avoids treating a hover-out during a normal click as a release.
-          if (draggingRef.current && e.buttons === 0) endDrag();
-        }}
-      >
-        {slides.map((slide, idx) => (
-          <div
-            key={idx}
-            className="cursor-pointer"
-            style={slideStyle(idx)}
-            onClick={() => {
-              if (dragMovedRef.current > DRAG_CLICK_THRESHOLD) {
-                dragMovedRef.current = 0;
-                return;
-              }
-              if (idx !== active) goTo(idx);
-            }}
-            aria-hidden={idx !== active}
-          >
-            <div className="relative overflow-hidden rounded-xl border-3 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] w-[460px] h-[260px] sm:w-[520px] sm:h-[300px]">
-              <img
-                src={typeof slide.src === "string" ? slide.src : slide.src.src}
-                alt={slide.alt ?? slide.title ?? `Slide ${idx + 1}`}
-                className="block h-[260px] w-[460px] object-cover sm:h-[300px] sm:w-[520px]"
-                draggable={false}
-              />
-              {idx === active && (
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[.06] to-transparent" />
-              )}
+      {/* ---- stage wrapper ----
+          This wrapper — not the top-level carousel container — is the
+          positioning context for the nav arrows below. That keeps the
+          arrows vertically centered on the image stage itself, regardless
+          of how tall the pagination dots + caption block underneath it
+          are. Centering them against the *whole* carousel (stage + dots +
+          caption) is what caused them to drift down into the caption on
+          mobile, where the caption's fixed height dominates the shrunk
+          stage height. */}
+      <div className="relative w-full flex items-center justify-center">
+        <div
+          ref={stageRef}
+          className="relative flex items-center justify-center w-full overflow-visible touch-pan-y cursor-grab active:cursor-grabbing"
+          style={{ perspective: "1200px", height: `${slideH}px` }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onPointerLeave={(e) => {
+            // Only end the drag if the pointer actually leaves while captured —
+            // avoids treating a hover-out during a normal click as a release.
+            if (draggingRef.current && e.buttons === 0) endDrag();
+          }}
+        >
+          {slides.map((slide, idx) => (
+            <div
+              key={idx}
+              className="cursor-pointer"
+              style={slideStyle(idx)}
+              onClick={() => {
+                if (dragMovedRef.current > DRAG_CLICK_THRESHOLD) {
+                  dragMovedRef.current = 0;
+                  return;
+                }
+                if (idx !== active) goTo(idx);
+              }}
+              aria-hidden={idx !== active}
+            >
+              <div
+                className="relative overflow-hidden rounded-xl border-3 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+                style={{ width: `${slideW}px`, height: `${slideH}px` }}
+              >
+                <img
+                  src={typeof slide.src === "string" ? slide.src : slide.src.src}
+                  alt={slide.alt ?? slide.title ?? `Slide ${idx + 1}`}
+                  className="block h-full w-full object-cover"
+                  draggable={false}
+                />
+                {idx === active && (
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[.06] to-transparent" />
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {/* ---- navigation arrows ---- */}
-      {showNavigation && total > 1 && (
-        <>
-          <button
-            onClick={() => go(-1)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-xl border-3 border-black bg-bg-panel text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised cursor-pointer transition-all hover:-translate-x-0.5 active:scale-90"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={() => go(1)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-xl border-3 border-black bg-bg-panel text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised cursor-pointer transition-all hover:translate-x-0.5 active:scale-90"
-            aria-label="Next slide"
-          >
-            <ChevronRight size={20} />
-          </button>
-        </>
-      )}
+        {/* ---- navigation arrows ---- */}
+        {showNavigation && total > 1 && (
+          <>
+            <button
+              onClick={() => go(-1)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-xl border-3 border-black bg-bg-panel text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised cursor-pointer transition-all hover:-translate-x-0.5 active:scale-90"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={() => go(1)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-xl border-3 border-black bg-bg-panel text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised cursor-pointer transition-all hover:translate-x-0.5 active:scale-90"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
+      </div>
 
       {/* ---- pagination dots ---- */}
       {/* Every dot keeps identical width/height at all times — only a scale
@@ -366,7 +420,7 @@ export default function CoverflowCarousel({
                 key={idx}
                 type="button"
                 onClick={() => goTo(idx)}
-                className="relative h-1.5 w-1.5 shrink-0 cursor-pointer rounded-full border border-black bg-border p-0 transition-colors duration-200 hover:bg-text-dim"
+                className="relative h-1.5 w-1.5 shrink-0 cursor-pointer rounded-full border border-black bg-border p-0 transition-colors duration-200 hover:bg-text-dim before:absolute before:-inset-3 before:rounded-full before:content-['']"
                 style={{ transform: `scale(${1 + 0.25 * proximity})` }}
                 role="tab"
                 aria-selected={idx === active}
@@ -388,17 +442,17 @@ export default function CoverflowCarousel({
       {showCaption && current && (
         <div
           key={active}
-          className="flex w-full max-w-xl flex-col items-center gap-3 overflow-hidden px-4 text-center h-[164px] sm:h-[184px] animate-[caption-in_0.4s_cubic-bezier(0.34,1.56,0.64,1)]"
+          className="flex w-full max-w-xl flex-col items-center gap-3 px-4 pb-2 text-center h-[172px] sm:h-[192px] animate-[caption-in_0.4s_cubic-bezier(0.34,1.56,0.64,1)]"
         >
-          <h3 className="truncate text-lg sm:text-xl font-bold text-text-bright tracking-tight">
+          <h3 className="truncate w-full text-lg sm:text-xl font-bold text-text-bright tracking-tight">
             {current.title}
           </h3>
 
-          <p className="max-w-lg mx-auto text-sm sm:text-base font-medium text-black dark:text-white leading-relaxed text-center opacity-90 line-clamp-2">
+          <p className="max-w-lg mx-auto text-xs sm:text-base font-medium text-black dark:text-white leading-tight sm:leading-relaxed text-center opacity-90 line-clamp-2 break-words">
             {current.subtitle}
           </p>
 
-          <div className="flex min-h-8 max-h-8 flex-wrap justify-center gap-2 overflow-hidden">
+          <div className="flex min-h-8 max-h-8 w-full flex-wrap justify-center gap-2 overflow-hidden">
             {current.tags?.map((tag) => (
               <span
                 key={tag}
@@ -409,16 +463,16 @@ export default function CoverflowCarousel({
             ))}
           </div>
 
-          <div className="flex min-h-[38px] items-center justify-center gap-3">
+          <div className="flex min-h-[42px] items-center justify-center gap-4">
             {current.githubUrl && (
               <a
                 href={current.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all cursor-pointer"
               >
-                <Code2 size={14} />
                 GitHub
+                <ArrowUpRight size={14} />
               </a>
             )}
             {current.liveUrl && (
@@ -426,10 +480,10 @@ export default function CoverflowCarousel({
                 href={current.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border-3 border-black bg-bg-panel px-3.5 py-2 text-xs font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-bg-raised hover:text-purple hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all cursor-pointer"
               >
-                <ExternalLink size={14} />
                 Live Demo
+                <ArrowUpRight size={14} />
               </a>
             )}
           </div>
