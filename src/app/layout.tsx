@@ -51,9 +51,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "imhannsop — Portfolio",
+    title: "imhannsop",
     description:
-      "CS student building neobrutalist web apps and customizing Linux systems.",
+      "imhannsop portfolio",
     images: ["/opengraph-image.png"],
   },
   icons: { icon: "/favicon.ico" },
