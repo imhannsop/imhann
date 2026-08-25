@@ -93,7 +93,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 10rem;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -101,7 +101,17 @@ body {
 }
 
 [id] {
-  scroll-margin-top: 10rem;
+  scroll-margin-top: 5rem;
+}
+
+@media (max-width: 767px) {
+  html {
+    scroll-padding-top: 0.5rem;
+  }
+
+  [id] {
+    scroll-margin-top: 0.5rem;
+  }
 }
 
 /* Keep ASCII art monospaced for correct glyph alignment */

@@ -12,7 +12,7 @@ export default function Hero() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-stretch">
       {/* Top Left Card: Hero (5 spans) */}
       <div
-        className="lg:col-span-5 relative flex flex-col h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scroll-mt-48 sm:scroll-mt-56"
+        className="lg:col-span-5 relative flex flex-col h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scroll-mt-3 md:scroll-mt-20"
         id="home"
       >
         <div className="flex flex-wrap items-center gap-6">
