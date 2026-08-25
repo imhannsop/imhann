@@ -168,7 +168,7 @@ export default function MobileNav({
               <button
                 type="button"
                 onClick={() => handleSelectItem(items[activeIndex])}
-                className="w-full py-2.5 px-4 bg-black text-white font-bold rounded-xl text-sm border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 bg-black text-white font-bold rounded-xl text-sm border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 touch-manipulation"
               >
                 <span>Go to {items[activeIndex]?.label}</span>
                 <span className="text-xs">→</span>

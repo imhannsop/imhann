@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Cause, JetBrains_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 const cause = Cause({
   subsets: ["latin"],
