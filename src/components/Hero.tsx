@@ -4,6 +4,7 @@ import Image from "next/image";
 import profileImg from "@/assets/profile.jpg";
 import About from "./About";
 import GitHubCalendar from "./GitHubCalendar";
+import ThemeToggle from "./ThemeToggle";
 
 const BLURB = "I build fast web tools and break my Linux setup for fun — usually in that order.";
 
@@ -57,6 +58,9 @@ export default function Hero() {
           >
             Resume ↗
           </a>
+          <span className="md:hidden">
+            <ThemeToggle className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-xl border-3 border-black bg-bg-panel text-text-bright shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" />
+          </span>
         </div>
       </div>
 

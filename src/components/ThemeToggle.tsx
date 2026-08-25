@@ -11,7 +11,11 @@ import { Moon, Sun } from "lucide-react";
  * FOUC prevention is handled by an inline <script> in layout.tsx that
  * runs before React hydrates, so the first paint is always correct.
  */
-export default function ThemeToggle() {
+interface ThemeToggleProps {
+  className?: string;
+}
+
+export default function ThemeToggle({ className }: ThemeToggleProps) {
   const [{ mounted, dark }, setState] = useState(() => ({ mounted: false, dark: false }));
 
   useEffect(() => {
@@ -31,7 +35,10 @@ export default function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="flex h-9 w-9 items-center justify-center rounded-lg border-2 border-black bg-bg-panel text-text-bright shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+        className={
+          className ??
+          "flex h-9 w-9 items-center justify-center rounded-lg border-2 border-black bg-bg-panel text-text-bright shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+        }
         aria-label="Toggle theme"
       >
         <span className="h-[18px] w-[18px]" />
@@ -42,7 +49,10 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border-2 border-black bg-bg-panel text-text-bright shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+      className={
+        className ??
+        "flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border-2 border-black bg-bg-panel text-text-bright shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+      }
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
