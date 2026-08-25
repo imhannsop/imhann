@@ -97,12 +97,12 @@ export default function MobileNav({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             onClick={() => setIsExpanded(false)}
-            className="fixed inset-0 z-[90] bg-black/40 touch-none"
+            className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-md touch-none"
           />
         )}
       </AnimatePresence>
@@ -125,7 +125,6 @@ export default function MobileNav({
         /* EXPANDED WHEEL NAVIGATION OVERLAY */
         <div className="fixed inset-0 z-[99] flex items-center justify-center p-4 pointer-events-none">
           <motion.div
-            layoutId="floating-nav-surface"
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.85, opacity: 0 }}

@@ -21,7 +21,6 @@ export default function FloatingButton({
 }: FloatingButtonProps) {
   return (
     <motion.div
-      layoutId="floating-nav-surface"
       onPointerDown={onPointerDown}
       onClick={onClick}
       style={{
