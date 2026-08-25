@@ -29,5 +29,13 @@ export function useActiveSection(ids: string[]) {
 }
 
 export function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const nav = document.querySelector("nav");
+  const GAP = 25; // breathing room between navbar and section
+  const navBottom = nav ? nav.getBoundingClientRect().bottom : 80;
+  const top = el.getBoundingClientRect().top + window.scrollY - navBottom - GAP;
+
+  window.scrollTo({ top, behavior: "smooth" });
 }

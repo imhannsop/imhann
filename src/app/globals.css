@@ -91,8 +91,17 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 10rem;
+}
+
 body {
   font-family: var(--font-jbmono), monospace;
+}
+
+[id] {
+  scroll-margin-top: 10rem;
 }
 
 /* Keep ASCII art monospaced for correct glyph alignment */

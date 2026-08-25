@@ -7,7 +7,7 @@ import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const active = useActiveSection(["home", ...crumbLinks]);
+  const active = useActiveSection(["home", ...crumbLinks.map((item) => item.id)]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -30,17 +30,16 @@ export default function Navbar() {
           imhannsop
         </a>
         <div className="flex items-center gap-2">
-          {/* Section links with special handling for "about" */}
-          {crumbLinks.map((id) => {
-            const targetId = id === "about" ? "home" : id;
-            const isActive = active === (id === "about" ? "home" : id);
+          {crumbLinks.map(({ id, value, label }) => {
+            const isActive = active === id;
             return (
               <button
                 key={id}
+                aria-label={`Jump to ${value} section`}
                 className={`cursor-pointer px-3 py-1.5 text-sm sm:text-base transition-all duration-150 ${isActive ? "font-bold text-text-bright underline underline-offset-8 decoration-2 decoration-purple" : "font-medium text-text hover:text-text-bright"}`}
-                onClick={() => scrollToSection(targetId)}
+                onClick={() => scrollToSection(id)}
               >
-                {id}
+                {label}
               </button>
             );
           })}

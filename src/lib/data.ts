@@ -1,15 +1,21 @@
 // All repeatable content lives here as data, not hand-written JSX.
 // Sections map over these arrays instead of copy-pasting markup.
 
-export const crumbLinks = ["about", "works", "certs", "blogs", "contact"] as const;
+export const crumbLinks = [
+  { id: "home", value: "about", label: "About" },
+  { id: "works", value: "works", label: "Works" },
+  { id: "certs", value: "certs", label: "Certs" },
+  { id: "blogs", value: "blogs", label: "Blogs" },
+  { id: "contact", value: "contact", label: "Contact" },
+] as const;
 
 export const mobileNavItems = [
-  { id: "home", label: "Home", icon: "home" as const },
-  { id: "works", label: "Works", icon: "works" as const },
-  { id: "certs", label: "Certs", icon: "certs" as const },
-  { id: "blogs", label: "Blogs", icon: "blogs" as const },
-  { id: "contact", label: "Contact", icon: "contact" as const },
-];
+  { id: "home", value: "home", label: "Home", icon: "home" as const },
+  { id: "works", value: "works", label: "Works", icon: "works" as const },
+  { id: "certs", value: "certs", label: "Certs", icon: "certs" as const },
+  { id: "blogs", value: "blogs", label: "Blogs", icon: "blogs" as const },
+  { id: "contact", value: "contact", label: "Contact", icon: "contact" as const },
+] as const;
 
 export const stats = [
   { label: "OS", value: "Arch Linux" },

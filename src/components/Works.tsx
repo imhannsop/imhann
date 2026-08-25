@@ -37,11 +37,11 @@ export default function Works() {
 
   return (
     <div
-      className="relative scroll-mt-24 sm:scroll-mt-28 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] min-h-[340px]"
+      className="relative scroll-mt-48 sm:scroll-mt-56 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] min-h-[340px]"
       id="works"
     >
       <div className="absolute -top-[9px] left-4 bg-bg px-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
-        projects
+        Selected Works - you can drag 
       </div>
 
       <div className="mb-6 mt-2 flex justify-end">
@@ -68,7 +68,6 @@ export default function Works() {
 
       {slides.length > 0 ? (
         <CoverflowCarousel
-          key={category}
           slides={slides}
           showCaption
           showNavigation

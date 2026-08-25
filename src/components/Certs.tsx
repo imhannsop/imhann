@@ -15,9 +15,19 @@ import { certs, type Cert } from "@/lib/data";
 const ALL_CATEGORY = "All";
 const CERT_CATEGORIES = ["Events", "Certifications"];
 
+// Shared spring used by BOTH the card's layoutId element and the modal's —
+// keeping it identical (rather than each defining its own) is what makes
+// open and close feel like the same motion running forward/backward
+// instead of two similar-but-not-quite-matched animations.
+const MORPH_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 280,
+  damping: 32,
+  mass: 0.8,
+};
+
 export default function Certs() {
   const [selectedCert, setSelectedCert] = useState<Cert | null>(null);
-  const [showAll, setShowAll] = useState(false);
   const [category, setCategory] = useState<string>(ALL_CATEGORY);
 
   const categories = useMemo(() => [ALL_CATEGORY, ...CERT_CATEGORIES], []);
@@ -29,8 +39,6 @@ export default function Certs() {
         : certs.filter((c) => c.category === category),
     [category],
   );
-
-  const visible = showAll ? filteredCerts : filteredCerts.slice(0, 3);
 
   // Escape to close modal and lock body scroll while open
   useEffect(() => {
@@ -50,7 +58,7 @@ export default function Certs() {
   return (
     <section
       id="certs"
-      className="relative flex w-full scroll-mt-24 flex-col sm:scroll-mt-28 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+      className="relative flex w-full scroll-mt-48 flex-col sm:scroll-mt-56 rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
     >
       <div className="absolute -top-[9px] left-4 bg-bg px-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
         certifications & achievements
@@ -61,10 +69,7 @@ export default function Certs() {
         <div className="relative">
           <select
             value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-              setShowAll(false);
-            }}
+            onChange={(e) => setCategory(e.target.value)}
             aria-label="Filter certifications by category"
             className="cursor-pointer appearance-none rounded-2xl border-3 border-black bg-bg-panel py-2 pl-3 pr-8 text-xs font-semibold text-text-bright shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-colors hover:bg-bg-raised focus:outline-none"
           >
@@ -81,24 +86,34 @@ export default function Certs() {
         </div>
       </div>
 
-      {/* Cards area is capped at 680px and only scrolls internally once
-          content would exceed that — with few cards it shrinks to fit
-          instead of leaving a big empty gap; cards stay uniform h-80
-          boxes regardless of category or certificate image.
-          layoutScroll tells Framer Motion this ancestor is scrollable so
-          its layoutId animations (grid <-> modal, hover tilt) measure
-          position correctly instead of warping/clipping the card. */}
-      <motion.div layoutScroll className="max-h-[680px] overflow-y-auto p-1">
-        {visible.length > 0 ? (
+      {/* Height caps are chosen per breakpoint so exactly 2 cards are
+          visible before scrolling kicks in. Below sm: the grid is a
+          single column of aspect-[7/5] cards, so max-h-[620px] fits 2
+          stacked cards + the row gap. At sm: and up the grid switches
+          to 2 columns with a fixed h-[26rem] (416px) card height — that
+          breakpoint is what the max-h switches on too (not md:), since
+          switching later would leave a mismatched height while the
+          grid has already gone to 2 columns. overflow-x-hidden stops
+          any sideways scroll; the pb-3/pr-2 padding (on top of the
+          pre-existing p-1) keeps the card's 4px drop-shadow from being
+          sheared off at the container edge while scrolling. */}
+      <motion.div
+        layoutScroll
+        layout
+        className="max-h-[620px] overflow-y-auto overflow-x-hidden scroll-smooth p-1 pb-3 pr-2 sm:max-h-[26.75rem] [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.25)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/20 [&::-webkit-scrollbar-thumb]:hover:bg-black/30"
+      >
+        {filteredCerts.length > 0 ? (
           <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2">
-            {visible.map((c) => (
-              <CertCard
-                key={c.name}
-                cert={c}
-                isOpen={selectedCert?.name === c.name}
-                onOpen={() => setSelectedCert(c)}
-              />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {filteredCerts.map((c) => (
+                <CertCard
+                  key={c.name}
+                  cert={c}
+                  isOpen={selectedCert?.name === c.name}
+                  onOpen={() => setSelectedCert(c)}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         ) : (
           <p className="py-12 text-center text-sm text-text-dim">
@@ -107,17 +122,6 @@ export default function Certs() {
           </p>
         )}
       </motion.div>
-
-      {filteredCerts.length > 3 && (
-        <div className="mt-4 flex h-12 shrink-0 items-center justify-center">
-          <button
-            onClick={() => setShowAll((s) => !s)}
-            className="inline-flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-2xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text hover:shadow-md transition"
-          >
-            {showAll ? "Show Less" : "View All"}
-          </button>
-        </div>
-      )}
 
       <AnimatePresence>
         {selectedCert && (
@@ -176,17 +180,33 @@ function CertCard({
     setHovered(false);
   };
 
+  // Neutralize tilt/hover before handing off to the modal — otherwise a
+  // card opened mid-tilt would still be visibly rotated for the one frame
+  // before opacity kicks in, since rotation and opacity are on separate
+  // motion values with separate timing.
+  const handleOpen = () => {
+    px.set(0);
+    py.set(0);
+    setHovered(false);
+    onOpen();
+  };
+
   return (
     <motion.div
       ref={ref}
       role="button"
       tabIndex={0}
-      onClick={onOpen}
-      onKeyDown={(e) => e.key === "Enter" && onOpen()}
+      layout
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      onClick={handleOpen}
+      onKeyDown={(e) => e.key === "Enter" && handleOpen()}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="group relative h-[26rem] w-full cursor-pointer [perspective:1200px]"
+      className="group relative aspect-[7/5] w-full cursor-pointer [perspective:1200px] sm:aspect-auto sm:h-[26rem]"
     >
       {/* This is the element that shares layoutId with the modal.
           Hiding it while open (rather than unmounting) lets Framer Motion
@@ -195,13 +215,18 @@ function CertCard({
         layoutId={`cert-card-${cert.name}`}
         layout
         style={{
-          rotateX: isOpen ? 0 : rotateX,
-          rotateY: isOpen ? 0 : rotateY,
+          rotateX,
+          rotateY,
           transformStyle: "preserve-3d",
-          opacity: isOpen ? 0 : 1,
         }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="relative h-full w-full overflow-hidden rounded-2xl border-3 border-black bg-transparent shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"      >
+        animate={{
+          opacity: isOpen ? 0 : 1,
+          boxShadow: isOpen
+            ? "0px 0px 0px 0px rgba(0,0,0,0)"
+            : "4px 4px 0px 0px rgba(0,0,0,1)",
+        }}
+        transition={MORPH_TRANSITION}
+        className="relative h-full w-full overflow-hidden rounded-2xl border-3 border-black bg-transparent"      >
         {/* The certificate itself fills the card edge-to-edge on desktop
             (translated slightly back in Z so the glass/caption layers pop
             in front). On mobile it switches to object-contain, matching
@@ -220,7 +245,7 @@ function CertCard({
               alt={cert.name}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-contain p-2 sm:object-cover sm:p-0"
+              className="object-contain p-1.5 sm:object-cover sm:p-0"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-bg-raised text-sm text-white/60">
@@ -305,6 +330,11 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        style={{
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+        }}
       />
 
       {/* Same layoutId as the grid card: Framer Motion animates this
@@ -317,8 +347,11 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
       <motion.div
         layoutId={`cert-card-${cert.name}`}
         layout
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-y-auto overflow-x-hidden overscroll-contain rounded-2xl border-3 border-black bg-bg-panel shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+        initial={{ boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)" }}
+        animate={{ boxShadow: "8px 8px 0px 0px rgba(0,0,0,1)" }}
+        exit={{ boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)" }}
+        transition={MORPH_TRANSITION}
+        className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-y-auto overflow-x-hidden overscroll-contain rounded-2xl border-3 border-black bg-bg-panel"
         role="dialog"
         aria-modal="true"
         aria-label={cert.name}
@@ -348,22 +381,13 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
             exit={{ opacity: 0, transition: { duration: 0.1 } }}
             className="w-full sm:w-1/2 flex flex-col p-6"
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-lg font-extrabold text-text-bright">
-                  {cert.name}
-                </h3>
-                <p className="mt-1 text-sm text-text-dim">
-                  {cert.issuer} • {cert.year}
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                aria-label="Close"
-                className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-black bg-bg-panel text-sm font-medium shadow-none transition sm:rounded-xl sm:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
-              >
-                ✕
-              </button>
+            <div>
+              <h3 className="text-lg font-extrabold text-text-bright">
+                {cert.name}
+              </h3>
+              <p className="mt-1 text-sm text-text-dim">
+                {cert.issuer} • {cert.year}
+              </p>
             </div>
 
             {cert.summary && (
@@ -388,14 +412,14 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
                 href={cert.url || "#"}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-black bg-black px-4 py-2 text-sm font-semibold text-white shadow-none transition sm:flex-none sm:rounded-2xl sm:px-4 sm:py-2 sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border-3 border-black bg-black px-4 py-2 text-sm font-semibold text-white shadow-none transition sm:flex-none sm:rounded-2xl sm:px-4 sm:py-2 sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
               >
                 Verify Credential
               </a>
 
               <button
                 onClick={onClose}
-                className="ml-auto rounded-2xl border-2 border-black bg-bg-panel px-4 py-2 text-sm font-medium shadow-none transition sm:rounded-2xl sm:px-4 sm:py-2 sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
+                className="ml-auto rounded-2xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium shadow-none transition sm:rounded-2xl sm:px-4 sm:py-2 sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-none"
               >
                 Close
               </button>

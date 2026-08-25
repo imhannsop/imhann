@@ -2,7 +2,7 @@ export default function About() {
   return (
     <div
       id="home"
-      className="relative flex flex-col justify-between h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scroll-mt-24 sm:scroll-mt-28"
+      className="relative flex flex-col justify-between h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scroll-mt-48 sm:scroll-mt-56"
     >
       <div className="absolute -top-[9px] left-4 bg-bg px-2 text-xs tracking-[.14em] font-semibold text-text-dim uppercase">
         about me
