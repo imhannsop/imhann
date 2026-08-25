@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { springScrollToElement } from "@/lib/useScrollSnap";
 import { useDraggable } from "./useDraggable";
 import FloatingButton from "./FloatingButton";
 import WheelMenu from "./WheelMenu";
@@ -85,8 +84,13 @@ export default function MobileNav({
   }, [isDragging, handlePointerMove, handlePointerUp]);
 
   const handleSelectItem = useCallback((item: NavItem) => {
-    // Scroll smoothly to target section
-    springScrollToElement(item.sectionId);
+    // Native scrollIntoView runs on the browser's compositor thread, not the
+    // main JS thread — so it can't be delayed by the menu-close re-render
+    // (unmounting the wheel, mounting the orb) or anything else competing
+    // for main-thread time. It also respects scroll-margin-top automatically.
+    document
+      .getElementById(item.sectionId)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
     // Collapse back into floating orb
     setIsExpanded(false);
   }, []);
