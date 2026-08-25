@@ -152,13 +152,10 @@ export const certs: Cert[] = [
 export const books = [
   {
     color: "c1",
-    title: "Agi si Ling",
+    title: "Sample blog post",
     meta: "Aug 2026 · 4 min read",
-    excerpt:
-      "agi ni sa"
+    excerpt: "wa uh",
   },
-
-
 ];
 
 // terminal: files "cat" can read, and sections "cd" can jump to
