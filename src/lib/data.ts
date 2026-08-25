@@ -10,11 +10,12 @@ export const crumbLinks = [
 ] as const;
 
 export const mobileNavItems = [
-  { id: "home", value: "home", label: "Home", icon: "home" as const },
-  { id: "works", value: "works", label: "Works", icon: "works" as const },
-  { id: "certs", value: "certs", label: "Certs", icon: "certs" as const },
-  { id: "blogs", value: "blogs", label: "Blogs", icon: "blogs" as const },
-  { id: "contact", value: "contact", label: "Contact", icon: "contact" as const },
+  { sectionId: "home", value: "home", label: "Home", icon: "home" as const },
+  { sectionId: "home", value: "about", label: "About", icon: "about" as const },
+  { sectionId: "works", value: "projects", label: "Projects", icon: "works" as const },
+  { sectionId: "certs", value: "certs", label: "Certs", icon: "certs" as const },
+  { sectionId: "blogs", value: "blogs", label: "Blogs", icon: "blogs" as const },
+  { sectionId: "contact", value: "contact", label: "Contact", icon: "contact" as const },
 ] as const;
 
 export const stats = [
