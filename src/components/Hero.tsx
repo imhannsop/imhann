@@ -1,78 +1,554 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import profileImg from "@/assets/profile.jpg";
-import About from "./About";
-import GitHubCalendar from "./GitHubCalendar";
-import ThemeToggle from "./ThemeToggle";
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const BLURB = "I build fast web tools and break my Linux setup for fun — usually in that order.";
+// Hero Component
+// Shows a neobrutalist employee badge that expands on click.
 
-export default function Hero() {
+const PHOTO_SRC = '/images/charac.png';
+
+const DISPLAY = "font-['Space_Grotesk','Archivo_Black',sans-serif]";
+const MONO = "font-['IBM_Plex_Mono','SFMono-Regular',Consolas,monospace]";
+
+// Shared transition for the badge morph effect
+const MORPH_TRANSITION = {
+  type: 'tween' as const,
+  duration: 0.6,
+  ease: [0.22, 1, 0.36, 1] as const,
+};
+
+export interface HeroProps {
+  /** Value shown in the NAME field. */
+  name?: string;
+  /** Value shown in the ROLE field. */
+  role?: string;
+  /** Short tags shown in the STACK field. */
+  skills?: string[];
+  /** One or two sentence tagline / clearance note under the fields. */
+  tagline?: string;
+  /** ID number printed under the barcode. */
+  idNumber?: string;
+  className?: string;
+}
+
+export default function Hero({
+  name = 'SOP',
+  role = 'FULL-STACK DEVELOPER',
+  skills = ['LINUX', 'WEB', 'CHAOS'],
+  tagline = 'Builds fast web tools and breaks his Linux setup for fun — usually in that order.',
+  idNumber = 'ID-0042-SOP',
+  className,
+}: HeroProps) {
+  const [hovered, setHovered] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  // Handle escape key and scroll lock
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setExpanded(false);
+    };
+    if (expanded) {
+      window.addEventListener('keydown', onKey);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = 'auto';
+    };
+  }, [expanded]);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-stretch">
-      {/* Top Left Card: Hero (5 spans) */}
+    <section
+      id="home"
+      className={`relative flex w-full min-h-[768px] max-sm:min-h-[620px] scroll-mt-3 md:scroll-mt-20 flex-col items-center justify-center overflow-hidden rounded-xl border-3 border-black bg-bg-panel p-10 max-sm:p-5 pt-16 max-sm:pt-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] box-border ${className ?? ''}`}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+        @media (prefers-reduced-motion: no-preference) {
+          .badge-float { animation: badge-float-y 4.5s ease-in-out infinite; }
+          .hologram-spin { animation: hologram-spin-rotate 9s linear infinite; }
+          .hologram-spin-rev { animation: hologram-spin-rotate 11s linear infinite reverse; }
+          .hologram-mote { animation: hologram-mote-rise 3.6s ease-in infinite; }
+          .hologram-mote-fall { animation: hologram-mote-fall 3.2s ease-in infinite; }
+          .grid-particle { animation: grid-particle-twinkle 2.8s ease-in-out infinite; }
+        }
+        @keyframes badge-float-y {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-14px); }
+        }
+        @keyframes hologram-spin-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes hologram-mote-rise {
+          0% { transform: translateY(0px); opacity: 0; }
+          15% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { transform: translateY(-96px); opacity: 0; }
+        }
+        @keyframes hologram-mote-fall {
+          0% { transform: translateY(0px); opacity: 0; }
+          15% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { transform: translateY(64px); opacity: 0; }
+        }
+        @keyframes grid-particle-twinkle {
+          0%, 100% { opacity: 0.15; }
+          50% { opacity: 0.8; }
+        }
+      `}</style>
+
+      {/* Grid floor and ceiling */}
       <div
-        className="lg:col-span-5 relative flex flex-col h-full rounded-xl border-3 border-black bg-bg-panel p-8 max-sm:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scroll-mt-3 md:scroll-mt-20"
-        id="home"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 opacity-70"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(17,17,17,0.35) 1px, transparent 1px), linear-gradient(to bottom, rgba(17,17,17,0.35) 1px, transparent 1px)',
+          backgroundSize: '52px 52px',
+          transform: 'perspective(400px) rotateX(-58deg)',
+          transformOrigin: 'top center',
+          WebkitMaskImage: 'linear-gradient(to bottom, black, transparent)',
+          maskImage: 'linear-gradient(to bottom, black, transparent)',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-40 opacity-70"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(17,17,17,0.35) 1px, transparent 1px), linear-gradient(to bottom, rgba(17,17,17,0.35) 1px, transparent 1px)',
+          backgroundSize: '52px 52px',
+          transform: 'perspective(400px) rotateX(58deg)',
+          transformOrigin: 'bottom center',
+          WebkitMaskImage: 'linear-gradient(to top, black, transparent)',
+          maskImage: 'linear-gradient(to top, black, transparent)',
+        }}
+      />
+
+      {/* Background particles */}
+      <GridParticles />
+
+      {/* Top ring decoration */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-3 z-0 -translate-x-1/2 scale-[0.6] sm:scale-[0.85]"
       >
-        <div className="flex flex-wrap items-center gap-6">
-          <div className="relative flex h-24 w-24 sm:h-28 sm:w-28 flex-none items-center justify-center rounded-full overflow-hidden border-3 border-black bg-gradient-to-br from-purple to-blue shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-[24px] font-extrabold">
-            <Image
-              src={profileImg}
-              alt="Logo"
-              width={140}
-              height={140}
-              className="object-cover grayscale transition-all duration-200 group-hover:grayscale-0"
-              priority
+        <HologramRingTop />
+      </div>
+
+      <div className="relative flex w-full flex-col items-center pb-8">
+        {/* Hologram projector base */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-full z-0 -translate-x-1/2 -translate-y-[54px] scale-90 sm:scale-125"
+        >
+          <HologramBase />
+        </div>
+
+        <div className={`relative z-10 flex flex-col items-center ${expanded ? '' : 'badge-float'}`}>
+          {/* Collapsed badge card */}
+          <motion.div
+            layoutId="hero-id-card"
+            layout
+            role="button"
+            tabIndex={0}
+            aria-expanded={expanded}
+            aria-label={`Expand ${name}'s badge`}
+            className="relative flex w-[300px] max-w-[88vw] min-h-[340px] max-sm:min-h-[300px] box-border cursor-pointer flex-col rounded-2xl border-[3px] border-black bg-white p-7 max-sm:p-5"
+            animate={{
+              opacity: expanded ? 0 : 1,
+              rotate: expanded ? 0 : hovered ? 0 : -1.5,
+              boxShadow: expanded
+                ? '0px 0px 0px 0px rgba(0,0,0,0)'
+                : hovered
+                  ? '14px 14px 0px 0px rgba(17,17,17,1)'
+                  : '8px 8px 0px 0px rgba(17,17,17,1)',
+            }}
+            transition={MORPH_TRANSITION}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={() => setExpanded(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setExpanded(true);
+              }
+            }}
+          >
+            {/* Badge clip hole */}
+            <div
+              aria-hidden="true"
+              className="absolute -top-[14px] left-1/2 h-[28px] w-[104px] max-sm:h-[22px] max-sm:w-[84px] -translate-x-1/2 rounded-md border-[3px] border-black bg-white"
             />
-          </div>
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-bright">Sop</h1>
-            <div className="mt-1 text-base font-medium text-purple">Full-Stack Dev</div>
-          </div>
+            <div
+              aria-hidden="true"
+              className="absolute -top-[6px] left-1/2 h-[16px] w-[16px] max-sm:h-[12px] max-sm:w-[12px] -translate-x-1/2 rounded-full border-2 border-black bg-white"
+            />
+
+            {/* header */}
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <span className={`text-[0.72rem] max-sm:text-[0.62rem] font-bold tracking-[0.14em] text-neutral-500 ${DISPLAY}`}>
+                USA
+              </span>
+              <span
+                className={`rotate-3 border-2 border-black bg-[#FF5A1F] px-2 py-0.5 text-[0.62rem] max-sm:text-[0.55rem] font-semibold tracking-[0.06em] text-white ${MONO}`}
+              >
+                TAP TO OPEN
+              </span>
+            </div>
+
+            {/* Profile photo */}
+            <div className="mt-5 max-sm:mt-3 flex flex-1 flex-col items-center justify-center">
+              <div className="h-[140px] w-[140px] max-sm:h-[100px] max-sm:w-[100px] flex-shrink-0 overflow-hidden rounded-xl border-[3px] border-black bg-neutral-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={PHOTO_SRC}
+                  alt={`${name} portrait`}
+                  className="block h-full w-full object-cover object-top grayscale contrast-125"
+                />
+              </div>
+              <p className={`mt-4 max-sm:mt-3 text-center text-[1.7rem] max-sm:text-[1.3rem] font-bold leading-tight tracking-tight ${DISPLAY}`}>
+                {name}
+              </p>
+              <p className={`mt-1 text-center text-[0.9rem] max-sm:text-[0.78rem] tracking-[0.08em] text-neutral-600 ${MONO}`}>
+                {role}
+              </p>
+            </div>
+
+            {/* footer */}
+            <div className="mt-5 max-sm:mt-3 flex items-center justify-between border-t-2 border-dotted border-black pt-3">
+              <span className={`text-[0.78rem] max-sm:text-[0.68rem] tracking-[0.06em] text-neutral-600 ${MONO}`}>
+                {idNumber}
+              </span>
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+            </div>
+          </motion.div>
         </div>
+      </div>
 
-        <p className="mt-6 text-sm sm:text-base leading-[1.65] text-text">
-          {BLURB}
-        </p>
-
-        <p className="mt-3 text-[#82181a] sm:text-base text-sm">
-          Still a work in progress — some things may break.
-        </p>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <a
-            href="https://github.com/imhannsop"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+      {/* Expanded badge modal */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            GitHub ↗
-          </a>
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-11 cursor-pointer items-center rounded-xl border-3 border-black bg-bg-panel px-4 py-2 text-sm font-medium text-text-bright no-underline shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-          >
-            Resume ↗
-          </a>
-          <span className="md:hidden">
-            <ThemeToggle className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-xl border-3 border-black bg-bg-panel text-text-bright shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:text-purple hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" />
-          </span>
-        </div>
-      </div>
+            <motion.div
+              className="absolute inset-0 bg-black/60"
+              onClick={() => setExpanded(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+            />
 
-      {/* Top Right Card: GitHub Activity Graph (7 spans) */}
-      <div className="lg:col-span-7 h-full">
-        <GitHubCalendar />
-      </div>
+            <motion.div
+              layoutId="hero-id-card"
+              layout
+              initial={{ boxShadow: '4px 4px 0px 0px rgba(0,0,0,1)' }}
+              animate={{ boxShadow: '12px 12px 0px 0px rgba(0,0,0,1)' }}
+              exit={{ boxShadow: '4px 4px 0px 0px rgba(0,0,0,1)' }}
+              transition={MORPH_TRANSITION}
+              className="badge-card relative z-10 w-full max-w-2xl max-h-[92vh] overflow-y-auto box-border rounded-2xl border-[3px] border-black bg-white p-5 sm:p-8"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${name} badge details`}
+            >
+              {/* close button */}
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                aria-label="Close badge"
+                className={`absolute right-3 top-3 sm:right-4 sm:top-4 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border-2 border-black bg-white text-sm font-bold shadow-[2px_2px_0_#111111] ${DISPLAY}`}
+              >
+                ×
+              </button>
 
-      {/* Bottom Card: About Me (12 spans for full width) */}
-      <div className="lg:col-span-12 h-full">
-        <About />
-      </div>
+              {/* Badge clip hole */}
+              <div
+                aria-hidden="true"
+                className="absolute -top-[14px] left-1/2 h-[30px] w-[110px] max-sm:h-[22px] max-sm:w-[84px] -translate-x-1/2 rounded-md border-[3px] border-black bg-white"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute -top-[6px] left-1/2 h-[17px] w-[17px] max-sm:h-[12px] max-sm:w-[12px] -translate-x-1/2 rounded-full border-2 border-black bg-white"
+              />
+
+              {/* header row */}
+              <div className="mt-3 flex flex-wrap items-center gap-2 justify-between pr-8 sm:pr-10">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className={`text-sm sm:text-base font-bold tracking-[0.1em] sm:tracking-[0.14em] ${DISPLAY}`}>
+                    UNIVERSITY OF SAN AGUSTIN
+                  </span>
+                </div>
+
+                <span
+                  className={`rotate-3 border-2 border-black bg-[#FF5A1F] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.68rem] sm:text-[0.8rem] font-semibold tracking-[0.06em] sm:tracking-[0.08em] text-white ${MONO}`}
+                >
+                  AUTHORIZED
+                </span>
+              </div>
+
+              {/* Content fields and photo */}
+              <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row flex-wrap gap-6 sm:gap-8">
+                <div className="min-w-0 sm:min-w-[260px] flex-1 basis-full sm:basis-[320px]">
+                  <FieldRow label="NAME" value={name} big />
+                  <FieldRow label="ROLE" value={role} />
+
+                  <div className="mt-4 flex items-baseline">
+                    <span className={`flex-shrink-0 text-[0.8rem] tracking-[0.1em] text-neutral-600 ${MONO}`}>
+                      STACK
+                    </span>
+                    <hr className="ml-2.5 flex-1 border-0 border-b-2 border-dotted border-black" />
+                  </div>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {skills.map((s) => (
+                      <span
+                        key={s}
+                        className={`border-2 border-black px-2.5 py-1 text-[0.78rem] tracking-[0.05em] ${MONO}`}
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+
+                  <FieldRow label="STATUS" value="ONLINE ●" mono topGap />
+
+                  <p className={`mt-5 mb-0 max-w-[38ch] text-[1rem] max-sm:text-[0.9rem] font-medium leading-[1.45] text-neutral-700 ${DISPLAY}`}>
+                    {tagline}
+                  </p>
+                </div>
+
+                {/* Profile photo */}
+                <div className="relative mx-auto sm:mx-0 h-[130px] w-[130px] sm:h-[170px] sm:w-[170px] flex-shrink-0">
+                  <div className="h-full w-full overflow-hidden rounded-lg border-[3px] border-black bg-neutral-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={PHOTO_SRC}
+                      alt={`${name} portrait`}
+                      className="block h-full w-full object-cover object-top grayscale contrast-125"
+                    />
+                  </div>
+                  {/* Clip tab decoration */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -top-[18px] right-[18px] h-6 w-[44px] rounded-t-md border-[3px] border-black bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* footer: barcode */}
+              <div className="mt-7 sm:mt-9 flex flex-wrap items-end justify-between gap-3 sm:gap-4 border-t-2 border-black pt-4 sm:pt-5">
+                <Barcode />
+                <span className={`whitespace-nowrap text-[0.78rem] sm:text-[0.85rem] tracking-[0.06em] ${MONO}`}>
+                  {idNumber}
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+// Hologram projector graphic
+function HologramBase() {
+  const ticks = Array.from({ length: 16 }, (_, i) => {
+    const angle = (i / 16) * 2 * Math.PI;
+    const x1 = 150 + Math.cos(angle) * 142;
+    const y1 = 150 + Math.sin(angle) * 38;
+    const x2 = 150 + Math.cos(angle) * 156;
+    const y2 = 150 + Math.sin(angle) * 44;
+    return { x1, y1, x2, y2, key: i };
+  });
+
+  return (
+    <div className="relative" style={{ width: 300 }}>
+      <svg viewBox="0 0 300 200" width="300" height="200" className="block overflow-visible">
+        <defs>
+          <pattern id="hologramHatch" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width="10" height="10" fill="#111111" />
+            <rect width="5" height="10" fill="#FFFFFF" />
+          </pattern>
+        </defs>
+
+        {/* Projector beam */}
+        <polygon
+          points="118,0 182,0 248,120 52,120"
+          fill="url(#hologramHatch)"
+          stroke="#111111"
+          strokeWidth="3"
+          strokeLinejoin="round"
+        />
+
+        {/* radiating scan ticks */}
+        {ticks.map((t) => (
+          <line key={t.key} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="#111111" strokeWidth="2" />
+        ))}
+
+        {/* outer ring */}
+        <ellipse cx="150" cy="150" rx="140" ry="36" fill="#FFFFFF" stroke="#111111" strokeWidth="3" />
+        {/* spinning dashed ring */}
+        <g className="hologram-spin" style={{ transformBox: 'fill-box', transformOrigin: 'center' }}>
+          <ellipse cx="150" cy="150" rx="104" ry="26" fill="none" stroke="#111111" strokeWidth="2" strokeDasharray="7 6" />
+        </g>
+        {/* accent ring */}
+        <ellipse cx="150" cy="150" rx="66" ry="16" fill="#111111" stroke="#111111" strokeWidth="3" />
+        {/* core */}
+        <ellipse cx="150" cy="150" rx="24" ry="6" fill="#FFFFFF" stroke="#111111" strokeWidth="2" />
+      </svg>
+
+      {/* Floating particles */}
+      <span
+        className="hologram-mote absolute h-[6px] w-[6px] border-2 border-black bg-white opacity-0"
+        style={{ left: '36%', bottom: 92 }}
+      />
+      <span
+        className="hologram-mote absolute h-[6px] w-[6px] border-2 border-black bg-white opacity-0"
+        style={{ left: '52%', bottom: 92, animationDelay: '1.1s' }}
+      />
+      <span
+        className="hologram-mote absolute h-[6px] w-[6px] border-2 border-black bg-white opacity-0"
+        style={{ left: '44%', bottom: 92, animationDelay: '2.3s' }}
+      />
+    </div>
+  );
+}
+
+// Top hologram ring graphic
+function HologramRingTop() {
+  const ticks = Array.from({ length: 14 }, (_, i) => {
+    const angle = (i / 14) * 2 * Math.PI;
+    const x1 = 150 + Math.cos(angle) * 118;
+    const y1 = 60 + Math.sin(angle) * 30;
+    const x2 = 150 + Math.cos(angle) * 132;
+    const y2 = 60 + Math.sin(angle) * 36;
+    return { x1, y1, x2, y2, key: i };
+  });
+
+  return (
+    <div className="relative" style={{ width: 300 }}>
+      <svg viewBox="0 0 300 160" width="300" height="160" className="block overflow-visible">
+        {/* Downward rays */}
+        {[70, 110, 150, 190, 230].map((x, i) => (
+          <line
+            key={i}
+            x1={x}
+            y1={68}
+            x2={x}
+            y2={150}
+            stroke="#111111"
+            strokeWidth="2"
+            strokeDasharray="3 5"
+            opacity={0.55}
+          />
+        ))}
+
+        {ticks.map((t) => (
+          <line key={t.key} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="#111111" strokeWidth="1.5" />
+        ))}
+
+        <ellipse cx="150" cy="60" rx="118" ry="30" fill="#FFFFFF" stroke="#111111" strokeWidth="3" />
+        <g className="hologram-spin-rev" style={{ transformBox: 'fill-box', transformOrigin: 'center' }}>
+          <ellipse cx="150" cy="60" rx="86" ry="22" fill="none" stroke="#111111" strokeWidth="2" strokeDasharray="6 5" />
+        </g>
+        <ellipse cx="150" cy="60" rx="54" ry="13" fill="#111111" stroke="#111111" strokeWidth="3" />
+        <ellipse cx="150" cy="60" rx="20" ry="5" fill="#FFFFFF" stroke="#111111" strokeWidth="2" />
+      </svg>
+
+      {/* Falling particles */}
+      <span
+        className="hologram-mote-fall absolute h-[6px] w-[6px] border-2 border-black bg-white opacity-0"
+        style={{ left: '30%', top: 66 }}
+      />
+      <span
+        className="hologram-mote-fall absolute h-[6px] w-[6px] border-2 border-black bg-white opacity-0"
+        style={{ left: '58%', top: 66, animationDelay: '1s' }}
+      />
+      <span
+        className="hologram-mote-fall absolute h-[6px] w-[6px] border-2 border-black bg-white opacity-0"
+        style={{ left: '48%', top: 66, animationDelay: '2s' }}
+      />
+    </div>
+  );
+}
+
+// Background grid particles
+function GridParticles() {
+  const dots = [
+    { x: '8%', y: '18%', s: 5, d: '0s' },
+    { x: '16%', y: '52%', s: 4, d: '0.4s' },
+    { x: '24%', y: '30%', s: 6, d: '0.9s' },
+    { x: '31%', y: '70%', s: 4, d: '1.3s' },
+    { x: '68%', y: '22%', s: 5, d: '0.6s' },
+    { x: '76%', y: '58%', s: 4, d: '1.7s' },
+    { x: '84%', y: '38%', s: 6, d: '0.2s' },
+    { x: '91%', y: '66%', s: 4, d: '2.1s' },
+    { x: '12%', y: '82%', s: 4, d: '1.1s' },
+    { x: '88%', y: '80%', s: 5, d: '1.9s' },
+  ];
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+      {dots.map((d, i) => (
+        <span
+          key={i}
+          className="grid-particle absolute border-2 border-black bg-white"
+          style={{ left: d.x, top: d.y, width: d.s, height: d.s, animationDelay: d.d }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function FieldRow({
+  label,
+  value,
+  big = false,
+  mono = false,
+  topGap = false,
+}: {
+  label: string;
+  value: string;
+  big?: boolean;
+  mono?: boolean;
+  topGap?: boolean;
+}) {
+  return (
+    <div className={`flex items-baseline ${topGap ? 'mt-4' : big ? 'mt-0' : 'mt-2.5'}`}>
+      <span className={`w-[56px] sm:w-[70px] flex-shrink-0 text-[0.72rem] sm:text-[0.8rem] tracking-[0.1em] text-neutral-600 ${MONO}`}>
+        {label}
+      </span>
+      <span
+        className={`ml-2 sm:ml-3 ${mono ? MONO : DISPLAY} ${mono ? 'font-semibold' : 'font-bold'} ${big ? 'text-[1.5rem] sm:text-[2rem] tracking-tight' : 'text-[0.95rem] sm:text-[1.1rem] tracking-wide'
+          } ${mono ? 'text-green-800' : 'text-black'}`}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+
+// Static barcode graphic
+function Barcode() {
+  const widths = [2, 1, 3, 1, 1, 2, 1, 4, 1, 2, 1, 1, 3, 2, 1, 1, 2, 3, 1, 1];
+  return (
+    <div className="flex h-[36px] sm:h-[44px] items-stretch gap-px" aria-hidden="true">
+      {widths.map((w, i) => (
+        <div
+          key={i}
+          className={i % 5 === 0 ? 'bg-neutral-400' : 'bg-black'}
+          style={{ width: w * 2 }}
+        />
+      ))}
     </div>
   );
 }

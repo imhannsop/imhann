@@ -79,7 +79,7 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Right: Contact Form */}
+        {/* Contact Form */}
         <div className="flex flex-col gap-5 p-8 pt-6 max-sm:p-6 max-sm:pt-6">
           <div>
             <label className="mb-2 block text-sm tracking-[.04em] font-medium text-text-dim before:content-['$_'] before:text-green">
