@@ -15,15 +15,23 @@ import { certs, type Cert } from "@/lib/data";
 const ALL_CATEGORY = "All";
 const CERT_CATEGORIES = ["Events", "Certifications"];
 
-// Shared spring used by BOTH the card's layoutId element and the modal's —
-// keeping it identical (rather than each defining its own) is what makes
-// open and close feel like the same motion running forward/backward
-// instead of two similar-but-not-quite-matched animations.
+const EASE_SMOOTH = [0.22, 1, 0.36, 1] as const;
+
+const LAYOUT_TRANSITION = {
+  type: "tween" as const,
+  duration: 0.38,
+  ease: EASE_SMOOTH,
+};
+
+const CHROME_TRANSITION = {
+  type: "tween" as const,
+  duration: 0.22,
+  ease: EASE_SMOOTH,
+};
+
 const MORPH_TRANSITION = {
-  type: "spring" as const,
-  stiffness: 280,
-  damping: 32,
-  mass: 0.8,
+  layout: LAYOUT_TRANSITION,
+  default: CHROME_TRANSITION,
 };
 
 export default function Certs() {
@@ -40,7 +48,6 @@ export default function Certs() {
     [category],
   );
 
-  // Escape to close modal and lock body scroll while open
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedCert(null);
@@ -86,17 +93,6 @@ export default function Certs() {
         </div>
       </div>
 
-      {/* Height caps are chosen per breakpoint so exactly 2 cards are
-          visible before scrolling kicks in. Below sm: the grid is a
-          single column of aspect-[7/5] cards, so max-h-[620px] fits 2
-          stacked cards + the row gap. At sm: and up the grid switches
-          to 2 columns with a fixed h-[26rem] (416px) card height — that
-          breakpoint is what the max-h switches on too (not md:), since
-          switching later would leave a mismatched height while the
-          grid has already gone to 2 columns. overflow-x-hidden stops
-          any sideways scroll; the pb-3/pr-2 padding (on top of the
-          pre-existing p-1) keeps the card's 4px drop-shadow from being
-          sheared off at the container edge while scrolling. */}
       <motion.div
         layoutScroll
         layout
@@ -144,20 +140,15 @@ function CertCard({
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Raw pointer position within the card, normalized -0.5..0.5
   const px = useMotionValue(0);
   const py = useMotionValue(0);
 
-  // Smooth the raw values so the tilt settles instead of snapping
   const springConfig = { stiffness: 260, damping: 20, mass: 0.4 };
   const sx = useSpring(px, springConfig);
   const sy = useSpring(py, springConfig);
 
-  // Wider tilt range (matches the punchier Card3D feel) — moving the
-  // mouse toward the top tilts the card "away" at the top
   const rotateX = useTransform(sy, [-0.5, 0.5], [12, -12]);
   const rotateY = useTransform(sx, [-0.5, 0.5], [-12, 12]);
-  // Sheen sweep + cursor-tracking glare, both driven by the same tilt
   const glareX = useTransform(sx, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(sy, [-0.5, 0.5], ["0%", "100%"]);
   const sheenAngle = useTransform(sx, [-0.5, 0.5], [105, 165]);
@@ -180,10 +171,6 @@ function CertCard({
     setHovered(false);
   };
 
-  // Neutralize tilt/hover before handing off to the modal — otherwise a
-  // card opened mid-tilt would still be visibly rotated for the one frame
-  // before opacity kicks in, since rotation and opacity are on separate
-  // motion values with separate timing.
   const handleOpen = () => {
     px.set(0);
     py.set(0);
@@ -208,9 +195,6 @@ function CertCard({
       onMouseLeave={handleMouseLeave}
       className="group relative aspect-[7/5] w-full cursor-pointer [perspective:1200px] sm:aspect-auto sm:h-[26rem]"
     >
-      {/* This is the element that shares layoutId with the modal.
-          Hiding it while open (rather than unmounting) lets Framer Motion
-          animate the *same* element from its grid position into the modal. */}
       <motion.div
         layoutId={`cert-card-${cert.name}`}
         layout
@@ -227,12 +211,6 @@ function CertCard({
         }}
         transition={MORPH_TRANSITION}
         className="relative h-full w-full overflow-hidden rounded-2xl border-3 border-black bg-transparent"      >
-        {/* The certificate itself fills the card edge-to-edge on desktop
-            (translated slightly back in Z so the glass/caption layers pop
-            in front). On mobile it switches to object-contain, matching
-            the modal's uncropped preview — object-cover was zooming/
-            cropping the certificate edges on small screens, which reads
-            as "wrong" next to the full-image modal view. */}
         <motion.div
           className="absolute inset-0 bg-white sm:bg-transparent"
           animate={{ scale: hovered ? 1.06 : 1 }}
@@ -323,6 +301,7 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.2, ease: EASE_SMOOTH }}
     >
       <motion.div
         className="absolute inset-0 bg-black/60"
@@ -330,20 +309,13 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
+        transition={{ duration: 0.3, ease: EASE_SMOOTH }}
         style={{
           backdropFilter: "blur(8px)",
           WebkitBackdropFilter: "blur(8px)",
         }}
       />
 
-      {/* Same layoutId as the grid card: Framer Motion animates this
-          element seamlessly from the card's screen position/size into
-          this centered, larger layout. Capped at 92vh and scrolls
-          internally — the fixed backdrop above always covers the full
-          viewport regardless of how tall this panel's content gets, and
-          nothing inside (image, description, tags, buttons) ever gets
-          cut off by the screen edge on short mobile viewports. */}
       <motion.div
         layoutId={`cert-card-${cert.name}`}
         layout
@@ -376,9 +348,9 @@ function Modal({ cert, onClose }: { cert: Cert; onClose: () => void }) {
           </div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { delay: 0.15 } }}
-            exit={{ opacity: 0, transition: { duration: 0.1 } }}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.26, ease: EASE_SMOOTH, delay: 0.14 } }}
+            exit={{ opacity: 0, y: 4, transition: { duration: 0.12, ease: EASE_SMOOTH } }}
             className="w-full sm:w-1/2 flex flex-col p-6"
           >
             <div>

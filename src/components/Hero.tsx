@@ -3,19 +3,42 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Hero Component
-// Shows a neobrutalist employee badge that expands on click.
 
 const PHOTO_SRC = '/images/charac.png';
 
 const DISPLAY = "font-['Space_Grotesk','Archivo_Black',sans-serif]";
 const MONO = "font-['IBM_Plex_Mono','SFMono-Regular',Consolas,monospace]";
 
-// Shared transition for the badge morph effect
-const MORPH_TRANSITION = {
+const EASE_SMOOTH = [0.22, 1, 0.36, 1] as const;
+
+const LAYOUT_TRANSITION = {
   type: 'tween' as const,
-  duration: 0.6,
-  ease: [0.22, 1, 0.36, 1] as const,
+  duration: 0.38,
+  ease: EASE_SMOOTH,
+};
+
+const CHROME_TRANSITION = {
+  type: 'tween' as const,
+  duration: 0.22,
+  ease: EASE_SMOOTH,
+};
+
+const MORPH_TRANSITION = {
+  layout: LAYOUT_TRANSITION,
+  default: CHROME_TRANSITION,
+};
+
+const contentStagger = {
+  hidden: { transition: { staggerChildren: 0.025, staggerDirection: -1 } },
+  visible: { transition: { staggerChildren: 0.045, delayChildren: 0.14 } },
+};
+const contentItem = {
+  hidden: { opacity: 0, y: 8, transition: { duration: 0.15, ease: EASE_SMOOTH } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.28, ease: EASE_SMOOTH },
+  },
 };
 
 export interface HeroProps {
@@ -43,7 +66,6 @@ export default function Hero({
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  // Handle escape key and scroll lock
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setExpanded(false);
@@ -72,6 +94,8 @@ export default function Hero({
           .hologram-mote { animation: hologram-mote-rise 3.6s ease-in infinite; }
           .hologram-mote-fall { animation: hologram-mote-fall 3.2s ease-in infinite; }
           .grid-particle { animation: grid-particle-twinkle 2.8s ease-in-out infinite; }
+          .scanline-sweep { animation: scanline-sweep 7s linear infinite; }
+          .corner-blink { animation: corner-blink 1.6s ease-in-out infinite; }
         }
         @keyframes badge-float-y {
           0%, 100% { transform: translateY(0px); }
@@ -96,6 +120,16 @@ export default function Hero({
         @keyframes grid-particle-twinkle {
           0%, 100% { opacity: 0.15; }
           50% { opacity: 0.8; }
+        }
+        @keyframes scanline-sweep {
+          0% { transform: translateY(-10%); opacity: 0; }
+          12% { opacity: 1; }
+          88% { opacity: 1; }
+          100% { transform: translateY(880%); opacity: 0; }
+        }
+        @keyframes corner-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.2; }
         }
       `}</style>
 
@@ -126,6 +160,29 @@ export default function Hero({
           maskImage: 'linear-gradient(to top, black, transparent)',
         }}
       />
+
+      {/* Warm glow behind the badge, gives the scene a light source */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-[40%] z-0 h-[560px] w-[560px] max-sm:h-[380px] max-sm:w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(255,90,31,0.12) 0%, rgba(255,90,31,0.05) 42%, transparent 72%)',
+        }}
+      />
+
+      {/* Radiating schematic lines fill the empty space around the badge */}
+      <RadiatingLines />
+
+      {/* Slow vertical scan sweeping the whole panel */}
+      <div
+        aria-hidden="true"
+        className="scanline-sweep pointer-events-none absolute inset-x-0 top-0 z-0 h-28 opacity-0"
+        style={{ background: 'linear-gradient(to bottom, transparent, rgba(17,17,17,0.07), transparent)' }}
+      />
+
+      {/* Corner readouts */}
+      <CornerFrame />
 
       {/* Background particles */}
       <GridParticles />
@@ -239,6 +296,7 @@ export default function Hero({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: EASE_SMOOTH }}
           >
             <motion.div
               className="absolute inset-0 bg-black/60"
@@ -246,7 +304,7 @@ export default function Hero({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
               style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
             />
 
@@ -282,76 +340,90 @@ export default function Hero({
                 className="absolute -top-[6px] left-1/2 h-[17px] w-[17px] max-sm:h-[12px] max-sm:w-[12px] -translate-x-1/2 rounded-full border-2 border-black bg-white"
               />
 
-              {/* header row */}
-              <div className="mt-3 flex flex-wrap items-center gap-2 justify-between pr-8 sm:pr-10">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span className={`text-sm sm:text-base font-bold tracking-[0.1em] sm:tracking-[0.14em] ${DISPLAY}`}>
-                    UNIVERSITY OF SAN AGUSTIN
-                  </span>
-                </div>
-
-                <span
-                  className={`rotate-3 border-2 border-black bg-[#FF5A1F] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.68rem] sm:text-[0.8rem] font-semibold tracking-[0.06em] sm:tracking-[0.08em] text-white ${MONO}`}
+              <motion.div variants={contentStagger} initial="hidden" animate="visible" exit="hidden">
+                {/* header row */}
+                <motion.div
+                  variants={contentItem}
+                  className="mt-3 flex flex-wrap items-center gap-2 justify-between pr-8 sm:pr-10"
                 >
-                  AUTHORIZED
-                </span>
-              </div>
-
-              {/* Content fields and photo */}
-              <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row flex-wrap gap-6 sm:gap-8">
-                <div className="min-w-0 sm:min-w-[260px] flex-1 basis-full sm:basis-[320px]">
-                  <FieldRow label="NAME" value={name} big />
-                  <FieldRow label="ROLE" value={role} />
-
-                  <div className="mt-4 flex items-baseline">
-                    <span className={`flex-shrink-0 text-[0.8rem] tracking-[0.1em] text-neutral-600 ${MONO}`}>
-                      STACK
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <span className={`text-sm sm:text-base font-bold tracking-[0.1em] sm:tracking-[0.14em] ${DISPLAY}`}>
+                      UNIVERSITY OF SAN AGUSTIN
                     </span>
-                    <hr className="ml-2.5 flex-1 border-0 border-b-2 border-dotted border-black" />
                   </div>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
-                    {skills.map((s) => (
-                      <span
-                        key={s}
-                        className={`border-2 border-black px-2.5 py-1 text-[0.78rem] tracking-[0.05em] ${MONO}`}
-                      >
-                        {s}
+
+                  <span
+                    className={`rotate-3 border-2 border-black bg-[#FF5A1F] px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.68rem] sm:text-[0.8rem] font-semibold tracking-[0.06em] sm:tracking-[0.08em] text-white ${MONO}`}
+                  >
+                    AUTHORIZED
+                  </span>
+                </motion.div>
+
+                {/* Content fields and photo */}
+                <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row flex-wrap gap-6 sm:gap-8">
+                  <motion.div
+                    variants={contentItem}
+                    className="min-w-0 sm:min-w-[260px] flex-1 basis-full sm:basis-[320px]"
+                  >
+                    <FieldRow label="NAME" value={name} big />
+                    <FieldRow label="ROLE" value={role} />
+
+                    <div className="mt-4 flex items-baseline">
+                      <span className={`flex-shrink-0 text-[0.8rem] tracking-[0.1em] text-neutral-600 ${MONO}`}>
+                        STACK
                       </span>
-                    ))}
-                  </div>
+                      <hr className="ml-2.5 flex-1 border-0 border-b-2 border-dotted border-black" />
+                    </div>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      {skills.map((s) => (
+                        <span
+                          key={s}
+                          className={`border-2 border-black px-2.5 py-1 text-[0.78rem] tracking-[0.05em] ${MONO}`}
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
 
-                  <FieldRow label="STATUS" value="ONLINE ●" mono topGap />
+                    <FieldRow label="STATUS" value="ONLINE ●" mono topGap />
 
-                  <p className={`mt-5 mb-0 max-w-[38ch] text-[1rem] max-sm:text-[0.9rem] font-medium leading-[1.45] text-neutral-700 ${DISPLAY}`}>
-                    {tagline}
-                  </p>
-                </div>
+                    <p className={`mt-5 mb-0 max-w-[38ch] text-[1rem] max-sm:text-[0.9rem] font-medium leading-[1.45] text-neutral-700 ${DISPLAY}`}>
+                      {tagline}
+                    </p>
+                  </motion.div>
 
-                {/* Profile photo */}
-                <div className="relative mx-auto sm:mx-0 h-[130px] w-[130px] sm:h-[170px] sm:w-[170px] flex-shrink-0">
-                  <div className="h-full w-full overflow-hidden rounded-lg border-[3px] border-black bg-neutral-200">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={PHOTO_SRC}
-                      alt={`${name} portrait`}
-                      className="block h-full w-full object-cover object-top grayscale contrast-125"
+                  {/* Profile photo */}
+                  <motion.div
+                    variants={contentItem}
+                    className="relative mx-auto sm:mx-0 h-[130px] w-[130px] sm:h-[170px] sm:w-[170px] flex-shrink-0"
+                  >
+                    <div className="h-full w-full overflow-hidden rounded-lg border-[3px] border-black bg-neutral-200">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={PHOTO_SRC}
+                        alt={`${name} portrait`}
+                        className="block h-full w-full object-cover object-top grayscale contrast-125"
+                      />
+                    </div>
+                    {/* Clip tab decoration */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute -top-[18px] right-[18px] h-6 w-[44px] rounded-t-md border-[3px] border-black bg-white"
                     />
-                  </div>
-                  {/* Clip tab decoration */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute -top-[18px] right-[18px] h-6 w-[44px] rounded-t-md border-[3px] border-black bg-white"
-                  />
+                  </motion.div>
                 </div>
-              </div>
 
-              {/* footer: barcode */}
-              <div className="mt-7 sm:mt-9 flex flex-wrap items-end justify-between gap-3 sm:gap-4 border-t-2 border-black pt-4 sm:pt-5">
-                <Barcode />
-                <span className={`whitespace-nowrap text-[0.78rem] sm:text-[0.85rem] tracking-[0.06em] ${MONO}`}>
-                  {idNumber}
-                </span>
-              </div>
+                {/* footer: barcode */}
+                <motion.div
+                  variants={contentItem}
+                  className="mt-7 sm:mt-9 flex flex-wrap items-end justify-between gap-3 sm:gap-4 border-t-2 border-black pt-4 sm:pt-5"
+                >
+                  <Barcode />
+                  <span className={`whitespace-nowrap text-[0.78rem] sm:text-[0.85rem] tracking-[0.06em] ${MONO}`}>
+                    {idNumber}
+                  </span>
+                </motion.div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}
@@ -482,30 +554,118 @@ function HologramRingTop() {
   );
 }
 
-// Background grid particles
+// Background grid particles, loosely wired together like a sensor constellation
 function GridParticles() {
   const dots = [
-    { x: '8%', y: '18%', s: 5, d: '0s' },
-    { x: '16%', y: '52%', s: 4, d: '0.4s' },
-    { x: '24%', y: '30%', s: 6, d: '0.9s' },
-    { x: '31%', y: '70%', s: 4, d: '1.3s' },
-    { x: '68%', y: '22%', s: 5, d: '0.6s' },
-    { x: '76%', y: '58%', s: 4, d: '1.7s' },
-    { x: '84%', y: '38%', s: 6, d: '0.2s' },
-    { x: '91%', y: '66%', s: 4, d: '2.1s' },
-    { x: '12%', y: '82%', s: 4, d: '1.1s' },
-    { x: '88%', y: '80%', s: 5, d: '1.9s' },
+    { x: 8, y: 18, s: 5, d: '0s' },
+    { x: 16, y: 52, s: 4, d: '0.4s' },
+    { x: 24, y: 30, s: 6, d: '0.9s' },
+    { x: 31, y: 70, s: 4, d: '1.3s' },
+    { x: 68, y: 22, s: 5, d: '0.6s' },
+    { x: 76, y: 58, s: 4, d: '1.7s' },
+    { x: 84, y: 38, s: 6, d: '0.2s' },
+    { x: 91, y: 66, s: 4, d: '2.1s' },
+    { x: 12, y: 82, s: 4, d: '1.1s' },
+    { x: 88, y: 80, s: 5, d: '1.9s' },
+    { x: 5, y: 44, s: 4, d: '0.7s' },
+    { x: 95, y: 47, s: 4, d: '1.5s' },
+  ];
+  // index pairs into `dots` — kept short and deliberately uneven, like a signal map, not a grid
+  const links: [number, number][] = [
+    [0, 2],
+    [2, 1],
+    [1, 10],
+    [3, 8],
+    [4, 6],
+    [6, 5],
+    [5, 9],
+    [7, 9],
+    [4, 11],
   ];
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full opacity-[0.18]"
+      >
+        {links.map(([a, b], i) => (
+          <line
+            key={i}
+            x1={dots[a].x}
+            y1={dots[a].y}
+            x2={dots[b].x}
+            y2={dots[b].y}
+            stroke="#111111"
+            strokeWidth="0.15"
+            strokeDasharray="1.2 1.6"
+          />
+        ))}
+      </svg>
       {dots.map((d, i) => (
         <span
           key={i}
           className="grid-particle absolute border-2 border-black bg-white"
-          style={{ left: d.x, top: d.y, width: d.s, height: d.s, animationDelay: d.d }}
+          style={{ left: `${d.x}%`, top: `${d.y}%`, width: d.s, height: d.s, animationDelay: d.d }}
         />
       ))}
     </div>
+  );
+}
+
+// Thin schematic lines radiating from the projector core, filling the
+// negative space the way blueprint / radar sweeps do
+function RadiatingLines() {
+  const CENTER = { x: 500, y: 260 };
+  const COUNT = 28;
+  const RADIUS = 900;
+  const lines = Array.from({ length: COUNT }, (_, i) => {
+    const angle = (i / COUNT) * 2 * Math.PI;
+    return {
+      key: i,
+      x2: CENTER.x + Math.cos(angle) * RADIUS,
+      y2: CENTER.y + Math.sin(angle) * RADIUS,
+    };
+  });
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 1000 700"
+      preserveAspectRatio="none"
+      className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-[0.06]"
+    >
+      {lines.map((l) => (
+        <line key={l.key} x1={CENTER.x} y1={CENTER.y} x2={l.x2} y2={l.y2} stroke="#111111" strokeWidth="1.5" />
+      ))}
+    </svg>
+  );
+}
+
+// Camera-viewfinder style corner readouts, framing the whole panel
+function CornerFrame() {
+  const label = `text-[0.6rem] tracking-[0.14em] text-neutral-500 whitespace-nowrap ${MONO}`;
+  return (
+    <>
+      <div className="pointer-events-none absolute left-4 top-4 z-10 flex items-center gap-2 max-sm:left-3 max-sm:top-3">
+        <div className="h-4 w-4 border-l-2 border-t-2 border-black/60" />
+        <span className={`${label} max-sm:hidden`}>SIG-0042</span>
+      </div>
+      <div className="pointer-events-none absolute right-4 top-4 z-10 flex items-center gap-2 max-sm:right-3 max-sm:top-3">
+        <span className={`${label} max-sm:hidden`}>STATUS: LOCKED</span>
+        <div className="h-4 w-4 border-r-2 border-t-2 border-black/60" />
+      </div>
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 flex items-center gap-2 max-sm:bottom-3 max-sm:left-3">
+        <div className="h-4 w-4 border-b-2 border-l-2 border-black/60" />
+        <span className={`${label} flex items-center gap-1.5 max-sm:hidden`}>
+          <span className="corner-blink inline-block h-1.5 w-1.5 rounded-full bg-[#FF5A1F]" />
+          SCANNING
+        </span>
+      </div>
+      <div className="pointer-events-none absolute bottom-4 right-4 z-10 flex items-center gap-2 max-sm:bottom-3 max-sm:right-3">
+        <span className={`${label} max-sm:hidden`}>UPLINK ●</span>
+        <div className="h-4 w-4 border-b-2 border-r-2 border-black/60" />
+      </div>
+    </>
   );
 }
 
