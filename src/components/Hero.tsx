@@ -58,7 +58,7 @@ export default function Hero({
 
   return (
     <section
-      id="home"
+      id="about"
       className={`relative flex w-full min-h-[768px] max-sm:min-h-[620px] scroll-mt-3 md:scroll-mt-20 flex-col items-center justify-center overflow-hidden rounded-xl border-3 border-black bg-bg-panel p-10 max-sm:p-5 pt-16 max-sm:pt-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] box-border ${className ?? ''}`}
     >
       <style>{`
@@ -108,21 +108,6 @@ export default function Hero({
           50% { opacity: 0.2; }
         }
       `}</style>
-
-      {/* Grid floor and ceiling */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-40 opacity-70"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, rgba(17,17,17,0.35) 1px, transparent 1px), linear-gradient(to bottom, rgba(17,17,17,0.35) 1px, transparent 1px)',
-          backgroundSize: '52px 52px',
-          transform: 'perspective(400px) rotateX(-58deg)',
-          transformOrigin: 'top center',
-          WebkitMaskImage: 'linear-gradient(to bottom, black, transparent)',
-          maskImage: 'linear-gradient(to bottom, black, transparent)',
-        }}
-      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-40 opacity-70"

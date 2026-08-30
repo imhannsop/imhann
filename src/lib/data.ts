@@ -4,11 +4,11 @@
 import type { StaticImageData } from "next/image";
 
 export const crumbLinks = [
-  { id: "about", value: "about", label: "About" },
-  { id: "works", value: "works", label: "Works" },
-  { id: "certs", value: "certs", label: "Certs" },
-  { id: "blogs", value: "blogs", label: "Blogs" },
-  { id: "contact", value: "contact", label: "Contact" },
+  { id: "about", value: "about", label: "about" },
+  { id: "works", value: "works", label: "works" },
+  { id: "certs", value: "certs", label: "certs" },
+  { id: "blogs", value: "blogs", label: "blogs" },
+  { id: "contact", value: "contact", label: "contact" },
 ] as const;
 
 
