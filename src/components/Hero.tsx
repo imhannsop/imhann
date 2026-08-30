@@ -214,13 +214,12 @@ export default function Hero({
             tabIndex={0}
             aria-expanded={expanded}
             aria-label={`Expand ${name}'s badge`}
-            className={`relative flex w-[300px] max-w-[88vw] min-h-[340px] max-sm:min-h-[300px] box-border cursor-pointer flex-col rounded-2xl border-[3px] border-black bg-white p-7 max-sm:p-5 transition-[box-shadow] duration-200 ${
-              expanded
-                ? 'shadow-[0px_0px_0px_0px_rgba(0,0,0,0)]'
-                : hovered
-                  ? 'shadow-[14px_14px_0px_0px_rgba(17,17,17,1)]'
-                  : 'shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]'
-            }`}
+            className={`relative flex w-[300px] max-w-[88vw] min-h-[340px] max-sm:min-h-[300px] box-border cursor-pointer flex-col rounded-2xl border-[3px] border-black bg-white p-7 max-sm:p-5 transition-[box-shadow] duration-200 ${expanded
+              ? 'shadow-[0px_0px_0px_0px_rgba(0,0,0,0)]'
+              : hovered
+                ? 'shadow-[14px_14px_0px_0px_rgba(17,17,17,1)]'
+                : 'shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]'
+              }`}
             animate={{
               opacity: expanded ? 0 : 1,
               rotate: expanded ? 0 : hovered ? 0 : -1.5,
@@ -301,7 +300,6 @@ export default function Hero({
             transition={{ duration: 0.2, ease: EASE_SMOOTH }}
           >
             <motion.div
-              className="absolute inset-0 bg-black/60"
               onClick={() => setExpanded(false)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

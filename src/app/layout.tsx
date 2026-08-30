@@ -12,6 +12,7 @@ const cause = Cause({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-cause",
+  adjustFontFallback: false,
 });
 
 const jetbrainsMono = JetBrains_Mono({
