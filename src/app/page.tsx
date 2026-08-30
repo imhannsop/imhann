@@ -11,7 +11,7 @@ import Terminal from "@/components/Terminal";
 export default function Home() {
   return (
     <>
-      <main className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 pt-4 sm:pt-6 sm:px-8 lg:px-12 max-sm:pt-6 max-sm:pb-8">
+      <main className="relative z-10 mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 pt-0 sm:pt-6 sm:px-8 lg:px-12 max-sm:pb-8">
         <Navbar />
         <MobileNav />
         <Hero />
