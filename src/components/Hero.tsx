@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useDevicePerf } from '@/lib/useDevicePerf';
 
 
 const PHOTO_SRC = '/images/charac.png';
@@ -65,6 +66,8 @@ export default function Hero({
 }: HeroProps) {
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const { isLowEnd, prefersReducedMotion } = useDevicePerf();
+  const skipEffects = isLowEnd || prefersReducedMotion;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -171,21 +174,19 @@ export default function Hero({
         }}
       />
 
-      {/* Radiating schematic lines fill the empty space around the badge */}
-      <RadiatingLines />
+      {!skipEffects && <RadiatingLines />}
 
-      {/* Slow vertical scan sweeping the whole panel */}
-      <div
-        aria-hidden="true"
-        className="scanline-sweep pointer-events-none absolute inset-x-0 top-0 z-0 h-28 opacity-0"
-        style={{ background: 'linear-gradient(to bottom, transparent, rgba(17,17,17,0.07), transparent)' }}
-      />
+      {!skipEffects && (
+        <div
+          aria-hidden="true"
+          className="scanline-sweep pointer-events-none absolute inset-x-0 top-0 z-0 h-28 opacity-0"
+          style={{ background: 'linear-gradient(to bottom, transparent, rgba(17,17,17,0.07), transparent)' }}
+        />
+      )}
 
-      {/* Corner readouts */}
       <CornerFrame />
 
-      {/* Background particles */}
-      <GridParticles />
+      {!skipEffects && <GridParticles />}
 
       {/* Top ring decoration */}
       <div
@@ -204,7 +205,7 @@ export default function Hero({
           <HologramBase />
         </div>
 
-        <div className={`relative z-10 flex flex-col items-center ${expanded ? '' : 'badge-float'}`}>
+        <div className={`relative z-10 flex flex-col items-center ${expanded || skipEffects ? '' : 'badge-float'}`}>
           {/* Collapsed badge card */}
           <motion.div
             layoutId="hero-id-card"
@@ -213,15 +214,16 @@ export default function Hero({
             tabIndex={0}
             aria-expanded={expanded}
             aria-label={`Expand ${name}'s badge`}
-            className="relative flex w-[300px] max-w-[88vw] min-h-[340px] max-sm:min-h-[300px] box-border cursor-pointer flex-col rounded-2xl border-[3px] border-black bg-white p-7 max-sm:p-5"
+            className={`relative flex w-[300px] max-w-[88vw] min-h-[340px] max-sm:min-h-[300px] box-border cursor-pointer flex-col rounded-2xl border-[3px] border-black bg-white p-7 max-sm:p-5 transition-[box-shadow] duration-200 ${
+              expanded
+                ? 'shadow-[0px_0px_0px_0px_rgba(0,0,0,0)]'
+                : hovered
+                  ? 'shadow-[14px_14px_0px_0px_rgba(17,17,17,1)]'
+                  : 'shadow-[8px_8px_0px_0px_rgba(17,17,17,1)]'
+            }`}
             animate={{
               opacity: expanded ? 0 : 1,
               rotate: expanded ? 0 : hovered ? 0 : -1.5,
-              boxShadow: expanded
-                ? '0px 0px 0px 0px rgba(0,0,0,0)'
-                : hovered
-                  ? '14px 14px 0px 0px rgba(17,17,17,1)'
-                  : '8px 8px 0px 0px rgba(17,17,17,1)',
             }}
             transition={MORPH_TRANSITION}
             onMouseEnter={() => setHovered(true)}
@@ -305,13 +307,14 @@ export default function Hero({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+              style={skipEffects ? {} : { backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+              className={`absolute inset-0 ${skipEffects ? 'bg-black/70' : 'bg-black/60'}`}
             />
 
             <motion.div
               layoutId="hero-id-card"
               layout
-              initial={{ boxShadow: '4px 4px 0px 0px rgba(0,0,0,1)' }}
+              initial={false}
               animate={{ boxShadow: '12px 12px 0px 0px rgba(0,0,0,1)' }}
               exit={{ boxShadow: '4px 4px 0px 0px rgba(0,0,0,1)' }}
               transition={MORPH_TRANSITION}

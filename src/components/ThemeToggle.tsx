@@ -27,8 +27,16 @@ export default function ThemeToggle({ className }: ThemeToggleProps) {
   const toggle = () => {
     const next = !dark;
     setState((s) => ({ ...s, dark: next }));
+
+    // Enable the scoped theme-transition CSS rule briefly
+    document.documentElement.classList.add("theme-transitioning");
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
+
+    // Remove after transitions settle
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 300);
   };
 
   // SSR / pre-mount: render placeholder to avoid layout shift
@@ -51,7 +59,7 @@ export default function ThemeToggle({ className }: ThemeToggleProps) {
       onClick={toggle}
       className={
         className ??
-        "flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border-2 border-black bg-bg-panel text-text-bright shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-bg-raised hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
+        "flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border-2 border-black bg-bg-panel text-text-bright shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-[transform,background-color,box-shadow] duration-150 hover:bg-bg-raised hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]"
       }
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
