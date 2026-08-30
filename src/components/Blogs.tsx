@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { X } from "lucide-react";
 import { books } from "@/lib/data";
+import { useModalEscape } from "@/lib/useModalEscape";
 
 type Book = (typeof books)[number];
 
@@ -46,21 +47,12 @@ export default function Blogs() {
     setOpenIdx(idx);
   };
 
-  const closeBook = () => {
+  const closeBook = useCallback(() => {
     setFlipped(false);
     setOpenIdx(null);
-  };
+  }, []);
 
-  useEffect(() => {
-    if (openIdx === null) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeBook();
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [openIdx]);
+  useModalEscape(openIdx !== null, closeBook);
 
   const book = openIdx !== null ? books[openIdx] : null;
 

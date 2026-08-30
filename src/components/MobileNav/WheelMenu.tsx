@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useCallback } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { NavItem } from "./types";
 
 interface WheelMenuProps {
@@ -26,11 +26,6 @@ export default function WheelMenu({
 
   // Motion value for continuous vertical scroll displacement
   const yOffset = useMotionValue(0);
-  const smoothY = useSpring(yOffset, {
-    stiffness: 300,
-    damping: 28,
-    mass: 0.8,
-  });
 
   // Keep target index centered
   useEffect(() => {

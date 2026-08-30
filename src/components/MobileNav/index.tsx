@@ -123,7 +123,6 @@ export default function MobileNav({
               setIsExpanded(true);
             }
           }}
-          activeSectionLabel={items[activeIndex]?.label}
         />
       ) : (
         /* EXPANDED WHEEL NAVIGATION OVERLAY */

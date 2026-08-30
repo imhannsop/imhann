@@ -493,11 +493,3 @@ export default function CoverflowCarousel({
   );
 }
 
-/*
-Add once, globally (e.g. globals.css), for the caption's entrance pop:
-
-@keyframes caption-in {
-  from { opacity: 0; transform: translateY(6px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-*/

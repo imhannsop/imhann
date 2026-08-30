@@ -1,29 +1,16 @@
 // All repeatable content lives here as data, not hand-written JSX.
 // Sections map over these arrays instead of copy-pasting markup.
 
+import type { StaticImageData } from "next/image";
+
 export const crumbLinks = [
-  { id: "home", value: "about", label: "About" },
+  { id: "about", value: "about", label: "About" },
   { id: "works", value: "works", label: "Works" },
   { id: "certs", value: "certs", label: "Certs" },
   { id: "blogs", value: "blogs", label: "Blogs" },
   { id: "contact", value: "contact", label: "Contact" },
 ] as const;
 
-export const mobileNavItems = [
-  { sectionId: "home", value: "home", label: "Home", icon: "home" as const },
-  { sectionId: "home", value: "about", label: "About", icon: "about" as const },
-  { sectionId: "works", value: "projects", label: "Projects", icon: "works" as const },
-  { sectionId: "certs", value: "certs", label: "Certs", icon: "certs" as const },
-  { sectionId: "blogs", value: "blogs", label: "Blogs", icon: "blogs" as const },
-  { sectionId: "contact", value: "contact", label: "Contact", icon: "contact" as const },
-] as const;
-
-export const stats = [
-  { label: "OS", value: "Arch Linux" },
-  { label: "Host", value: "EXT-215-54" },
-  { label: "WM", value: "niri" },
-  { label: "Shell", value: "bash" },
-];
 
 export const skillGroups = [
   {
@@ -57,7 +44,7 @@ export const skillGroups = [
   },
 ];
 
-import type { StaticImageData } from "next/image";
+
 
 // ESM imports — Next.js resolves these to hashed paths that include basePath automatically.
 // This prevents broken images when deployed to GitHub Pages with a subpath (e.g. /imhann/).

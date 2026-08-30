@@ -23,7 +23,6 @@ export default function GitHubCalendar() {
   const [totalContributions, setTotalContributions] = useState(297);
   const [currentStreak, setCurrentStreak] = useState(2);
   const [maxStreak, setMaxStreak] = useState(4);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchContributions() {
@@ -102,8 +101,6 @@ export default function GitHubCalendar() {
         setMonthLabels(labels);
       } catch (err) {
         console.error("Error fetching live github activity:", err);
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -175,21 +172,21 @@ export default function GitHubCalendar() {
                       return <div key={`empty-${wIdx}-${dIdx}`} className="h-[16px] w-[16px] opacity-0" />;
                     }
 
+                    const LEVEL_STYLES = [
+                      "bg-bg-raised border border-border-dim hover:bg-border",
+                      "bg-[#22c55e]/20 hover:scale-115",
+                      "bg-[#22c55e]/40 hover:scale-115",
+                      "bg-[#22c55e]/70 hover:scale-115",
+                      "bg-[#22c55e] hover:scale-115"
+                    ];
+                    const levelClass = LEVEL_STYLES[day.level] || LEVEL_STYLES[0];
+
                     return (
                       <div
                         key={`${wIdx}-${dIdx}-${day.date}`}
                         onMouseEnter={() => setHoveredDay(day)}
                         onMouseLeave={() => setHoveredDay(null)}
-                        className={`h-[16px] w-[16px] rounded-[2px] transition-all cursor-pointer ${day.level === 0
-                            ? "bg-bg-raised border border-border-dim hover:bg-border"
-                            : day.level === 1
-                              ? "bg-[#22c55e]/20 hover:scale-115"
-                              : day.level === 2
-                                ? "bg-[#22c55e]/40 hover:scale-115"
-                                : day.level === 3
-                                  ? "bg-[#22c55e]/70 hover:scale-115"
-                                  : "bg-[#22c55e] hover:scale-115"
-                          }`}
+                        className={`h-[16px] w-[16px] rounded-[2px] transition-all cursor-pointer ${levelClass}`}
                         style={{
                           border: day.level > 0 ? "1px solid black" : undefined,
                           boxShadow: day.level > 2 ? "1.5px 1.5px 0px black" : undefined,

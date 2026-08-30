@@ -10,7 +10,6 @@ const BUTTON_SIZE = 56;
 export function useDraggable() {
   const [position, setPosition] = useState<Position>({ x: 24, y: 500 });
   const [isDragging, setIsDragging] = useState(false);
-  const [dragProgress, setDragProgress] = useState(0); // 0 (idle) to 1 (expanded)
   const dragStartRef = useRef<{ x: number; y: number; posX: number; posY: number; time: number } | null>(null);
   const totalDeltaRef = useRef<number>(0);
 
@@ -109,18 +108,12 @@ export function useDraggable() {
       });
 
       setPosition(newPos);
-      
-      // Calculate dynamic drag progress if expanding on drag
-      const maxDragDistance = 120;
-      const progress = Math.min(1, Math.max(0, dist / maxDragDistance));
-      setDragProgress(progress);
     },
     [clampPosition]
   );
 
   const handlePointerUp = useCallback(() => {
     setIsDragging(false);
-    setDragProgress(0);
 
     if (dragStartRef.current) {
       savePosition(position);
@@ -133,12 +126,9 @@ export function useDraggable() {
 
   return {
     position,
-    setPosition,
     isDragging,
-    dragProgress,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
-    clampPosition,
   };
 }

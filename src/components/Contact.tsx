@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Quote as QuoteIcon } from "lucide-react";
+import { Mail, Quote } from "lucide-react";
 
 // lucide-react deprecated/removed brand-logo icons (Github, Linkedin, etc.),
 // so these two are small inline SVGs instead.
@@ -55,7 +55,7 @@ export default function Contact() {
         {/* Left: Quote + Social Links */}
         <div className="flex flex-col justify-between gap-8 p-8 pt-10 max-sm:p-6 max-sm:pt-8 md:border-r-3 border-b-3 md:border-b-0 border-black">
           <div className="flex flex-col gap-4">
-            <QuoteIcon className="h-7 w-7 text-purple" strokeWidth={2.5} fill="currentColor" />
+            <Quote className="h-7 w-7 text-purple" strokeWidth={2.5} fill="currentColor" />
             <p className="text-xl sm:text-4xl font-medium italic leading-snug text-text-bright">
               &ldquo;Perfection is achieved when there is nothing left to remove.&rdquo;
             </p>

@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cause, JetBrains_Mono, Fraunces } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
-import type { Viewport } from "next";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.ico" },
 };
 
-import Script from "next/script";
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -78,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${cause.variable} ${jetbrainsMono.variable} ${fraunces.variable} flex flex-col items-center bg-bg text-base text-text`}
       >
         {children}
-        {/* <FloatingNavClient /> */}
+
       </body>
     </html>
   );

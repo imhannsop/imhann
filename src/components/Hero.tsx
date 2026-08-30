@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDevicePerf } from '@/lib/useDevicePerf';
+import { EASE_SMOOTH, MORPH_TRANSITION } from '@/lib/transitions';
+import { useModalEscape } from '@/lib/useModalEscape';
 
 
 const PHOTO_SRC = '/images/charac.png';
@@ -10,24 +12,6 @@ const PHOTO_SRC = '/images/charac.png';
 const DISPLAY = "font-['Space_Grotesk','Archivo_Black',sans-serif]";
 const MONO = "font-['IBM_Plex_Mono','SFMono-Regular',Consolas,monospace]";
 
-const EASE_SMOOTH = [0.22, 1, 0.36, 1] as const;
-
-const LAYOUT_TRANSITION = {
-  type: 'tween' as const,
-  duration: 0.38,
-  ease: EASE_SMOOTH,
-};
-
-const CHROME_TRANSITION = {
-  type: 'tween' as const,
-  duration: 0.22,
-  ease: EASE_SMOOTH,
-};
-
-const MORPH_TRANSITION = {
-  layout: LAYOUT_TRANSITION,
-  default: CHROME_TRANSITION,
-};
 
 const contentStagger = {
   hidden: { transition: { staggerChildren: 0.025, staggerDirection: -1 } },
@@ -69,19 +53,8 @@ export default function Hero({
   const { isLowEnd, prefersReducedMotion } = useDevicePerf();
   const skipEffects = isLowEnd || prefersReducedMotion;
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setExpanded(false);
-    };
-    if (expanded) {
-      window.addEventListener('keydown', onKey);
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = 'auto';
-    };
-  }, [expanded]);
+  const closeExpanded = useCallback(() => setExpanded(false), []);
+  useModalEscape(expanded, closeExpanded);
 
   return (
     <section

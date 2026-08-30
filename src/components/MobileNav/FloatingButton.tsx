@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Compass, Menu, Move } from "lucide-react";
+import { Compass } from "lucide-react";
 import { Position } from "./types";
 
 interface FloatingButtonProps {
@@ -9,7 +9,6 @@ interface FloatingButtonProps {
   isDragging: boolean;
   onPointerDown: (e: React.PointerEvent) => void;
   onClick: () => void;
-  activeSectionLabel?: string;
 }
 
 export default function FloatingButton({
@@ -17,7 +16,6 @@ export default function FloatingButton({
   isDragging,
   onPointerDown,
   onClick,
-  activeSectionLabel,
 }: FloatingButtonProps) {
   return (
     <motion.div

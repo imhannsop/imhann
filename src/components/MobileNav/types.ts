@@ -13,7 +13,7 @@ export interface Position {
   y: number;
 }
 
-export type NavState = "idle" | "morphing" | "expanded";
+
 
 /**
  * Mobile nav items are derived directly from `crumbLinks` — the same data
